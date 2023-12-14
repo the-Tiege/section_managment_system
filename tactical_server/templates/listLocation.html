@@ -1,0 +1,34 @@
+{% extends "base.html" %}<!--Extends content from the base html page-->
+{% block  content %}<!--Extends content from the base html page-->
+<div class="jumbotron"><!--Adds jumbotron style to page-->
+  <h1>{{person.id}} {{person.name}} Location</h1><!--Prints the name and Id of the soldier whos location you are viewing-->
+
+<table class="table"><!--Creates table to display data, bootstrap class 'table' added to improve style of table-->
+  <thead class="thead-dark"><!--Bootstrap style gives a dark backround to table headings-->
+    <tr><!--Creates a row in the table-->
+      <th scope="col">Longitude </th><!--Column heading-->
+      <th scope="col">Latitude </th><!--Column heading-->
+      <th scope="col">Grid reference </th><!--Column heading-->
+      <th scope="col">Time </th><!--Column heading-->
+    </tr>
+  </thead>
+  <tbody>
+    
+    {% for pte in Location %}<!--For loop used to print all values to the page-->
+    <tr><!--Table row-->
+
+    <td scope="row">{{pte.lat}}</td><!--Prints value for Latitude-->
+    <td>{{pte.long}}</td><!--Prints value for Longitude-->
+    <td>{{pte.GRID}}</td><!--Prints value for Grid reference-->
+    <td>{{pte.TIME}}</td><!--Prints value for time-->
+
+    </tr>
+
+    {% endfor %}<!--end of for loop-->
+
+  </tbody>
+</table>
+
+</div>
+
+{% endblock %}

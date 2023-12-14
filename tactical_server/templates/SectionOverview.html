@@ -1,0 +1,98 @@
+{% extends "base.html" %}<!--Extends content from the base html page-->
+
+{% block  scripts %}<!--Extends script from the base html page-->
+
+<script>
+
+  //Javascript function to update information displayed on page without haveing to refresh the page
+  function update(){
+
+  //Remove values currently printed on the page or the following function will just append more data to the page using the tag "section".
+    $("#section tbody > tr").remove();
+
+      //Gets json data from the page "/soldiers" and stores it in an array 'result'
+    $.getJSON("/section",function(result){
+
+      //increments through each value in array result to allow it to beused to prind data to webpage.
+      $.each(result,function(i){
+
+
+        //1st variable contains the section number, total amunition in the section, the strength of the section, the location of the section and the number of section members that are fit for duty.
+        var bit1 = "<tr><td scope='row'>" + result[i].id +"</td><td>"+ result[i].SectionAmmo + "</td><td>"
+            + result[i].SectionStrength + "</td><td>" + result[i].SectionLocation + "</td><td class='table-success'>" + result[i].SectionOK + "</td>";
+
+        //Second variable contains number of casulties in the section. displays green if there are no casulties otherwise displays orange
+        if(result[i].SectionCasualty == 0){
+          var bit2 = "<td class = 'table-success'>"+ result[i].SectionCasualty +" </td>";
+        }else{
+          var bit2 = "<td class = 'table-warning'>"+ result[i].SectionCasualty +" </td>";
+        }
+
+        //8th variable displays battery level, changes from green to orange to red as battery level drops.
+        if(result[i].SectionBattery>60){
+          var bit3 = "<td><div class='progress'><div class='progress-bar bg-success' style='width:" + result[i].SectionBattery +"%;'>" + result[i].SectionBattery + "% </div></div></td>";
+        }else if(result[i].SectionBattery>30){
+          var bit3 = "<td><div class='progress'><div class='progress-bar bg-warning' style='width:" + result[i].SectionBattery +"%;'>" + result[i].SectionBattery + "% </div></div></td>";
+        }else{
+          var bit3 = "<td><div class='progress'><div class='progress-bar bg-danger' style='width:" + result[i].SectionBattery +"%;'>" + result[i].SectionBattery + "% </div></div></td>";
+        }
+
+
+          //Concatenates variables together to create table row to be displayed on the web page.
+        var row = bit1 + bit2 + bit3;
+        $("#section tbody").append(row);
+
+      });
+
+    });
+
+  }
+
+  $(document).ready(function(){
+
+    update();//initial call of update function to display values when web page is viewed.
+
+    setInterval(function()//calls update function every 5 seconds to update page.
+    {
+      update();
+    },5000)
+  });
+
+
+
+</script>
+
+{% endblock %}<!--Extends content from the base html page-->
+
+
+{% block  content %}<!--Extends content from the base html page-->
+
+
+<div class="jumbotron"><!--Adds jumbotron style to page-->
+  <h1>Section</h1><!--Displays name of table-->
+
+  <table id = "section" class="table"><!--Creates table to display data, bootstrap class 'table' added to improve style of table id tag 'section' used by Javascript function to apply data to the table-->
+    <thead class="thead-dark"><!--Bootstrap style gives a dark backround to table headings-->
+      <tr><!--Table row-->
+        <th scope="col">Section Number </th><!--Column heading-->
+        <th scope="col">Ammunition </th><!--Column heading-->
+        <th scope="col">Strength </th><!--Column heading-->
+        <th scope="col">Location </th><!--Column heading-->
+        <th scope="col">OK</th><!--Column heading--><!--Column heading-->
+        <th scope="col">Casualty</th><!--Column heading-->
+        <th scope="col">Battery </th><!--Column heading-->
+      </tr><!--Table row end-->
+    </thead>
+    <tbody>
+
+
+
+
+
+    </tbody>
+  </table>
+
+
+</div>
+
+{% endblock %}

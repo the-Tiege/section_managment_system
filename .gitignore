@@ -1,0 +1,48 @@
+# Virtual environment
+venv/
+
+# Compiled Python files
+__pycache__/
+*.pyc
+
+# SQLite database file
+*.db
+*.sqlite
+
+# Configuration files
+instance/
+
+# Environment variables file
+.env
+
+# Compiled files
+*.pyc
+*.pyo
+__pycache__/
+
+# Local development configuration
+config.py
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Editor-specific files
+*.swp
+*.swo
+
+# Dependency directories
+node_modules/
+
+# Flask-SQLAlchemy migrations
+/migrations/
+
+# Debugging files
+/Debugging/
+
