@@ -1,0 +1,181 @@
+{% extends "base.html" %}<!--Extends content from the base html page-->
+
+{% block  scripts %}<!--Extends script from the base html page-->
+
+<script>
+
+  //Javascript function to update information displayed on page without haveing to refresh the page
+  function update(){
+
+    $("#section tbody > tr").remove();//Remove values currently printed on the page or the following function will just append more data to the page using the tag "section".
+
+
+    //Gets json data from the page "/soldiers" and stores it in an array 'result'
+    $.getJSON("/soldiers",function(result){
+      //increments through each value in array result to allow it to beused to prind data to webpage.
+      $.each(result,function(i){
+
+        //original format of data stored in variable 'row' to be printed to webpage.
+        //var row = "<tr><td scope='row'>" + result[i].id +"</td><td>"+ result[i].name + "</td><td class = 'table-success'>"+ result[i].Ident +" </td><td>"
+        // + result[i].HR + " </td><td>" + result[i].long + " </td><td>" + result[i].lat + " </td><td>" + result[i].TIME + " </td><td>" + result[i].Rndsfired +
+        // " </td><td><div class='progress'><div class='progress-bar bg-success' style='width:" + result[i].RifleBat +"%;'>" + result[i].RifleBat + "% </div></div></td><td>"
+        // + result[i].State + " </td><td><div class='progress'><div class='progress-bar bg-success' style='width:" + result[i].ArmourBat +"%;'>" + result[i].ArmourBat
+         //+ "% </div></div> </td></tr>";
+
+        //First variable containing army number, name, and role.
+        var bit1 = "<tr><td scope='row'>" + result[i].id +"</td><td>"+ result[i].name + "</td><td>" + result[i].role + "</td>";
+
+        //Second variable stores the identity check of the user if the id has been verified it displays as green. otherwise it displays as orange.
+        if(result[i].Ident == "Verified"){
+
+          var bit2 = "<td class = 'table-success'>"+ result[i].Ident +" </td>";
+
+        }else{
+
+          var bit2 = "<td class = 'table-warning'>"+ result[i].Ident +" </td>";
+
+        }
+
+
+        //third variable displays heart rate of soldier. heart rate of less than 40 and greater than 180 displays as red
+        if(result[i].LastHR>180 || result[i].LastHR<40){
+
+          var bit3 = "<td class='table-danger'>" + result[i].LastHR + " </td>";
+
+        }else if(result[i].LastHR>140 && result[i].LastHR<180 || result[i].LastHR>40 && result[i].LastHR<55){
+          //Heart rate of less greater than 140 but less than 180 or less than 55 but greater than 40 displays as orange
+
+          var bit3 = "<td class='table-warning'>" + result[i].LastHR + " </td>";
+
+        }else{
+          //otherwise heart rate displays as green
+
+          var bit3 = "<td class='table-success'>" + result[i].LastHR + " </td>";
+
+        }
+
+        //4th variable displays locatkon, distance and time.
+        var bit4 = "<td>" + result[i].currentLocation + " </td><td>" + result[i].Distance + " </td><td>" + result[i].TIME + " </td><td>" + result[i].Rndsfired + " </td>";
+
+        //5th variable displays rifle battery level, changes from green to orange to red as battery level drops.
+        if(result[i].RifleBat>60){
+
+          var bit5 = "<td><div class='progress'><div class='progress-bar bg-success' style='width:" + result[i].RifleBat +"%;'>" + result[i].RifleBat + "% </div></div></td>";
+
+        }else if(result[i].RifleBat>30){
+
+          var bit5 = "<td><div class='progress'><div class='progress-bar bg-warning' style='width:" + result[i].RifleBat +"%;'>" + result[i].RifleBat + "% </div></div></td>";
+
+        }else{
+
+          var bit5 = "<td><div class='progress'><div class='progress-bar bg-danger' style='width:" + result[i].RifleBat +"%;'>" + result[i].RifleBat + "% </div></div></td>";
+
+        }
+
+        //6th variable displays state of the soldier, Displays green if 'OK' and red if Casualty.
+        if(result[i].State == "OK"){
+
+          var bit6 = "<td class='table-success'>" + result[i].State + " </td>";
+
+        }else{
+
+          var bit6 = "<td class='table-danger'>" + result[i].State + " </td>";
+
+        }
+
+        //7th variable displays Body armour battery level, changes from green to orange to red as battery level drops.
+        if(result[i].ArmourBat>60){
+
+          var bit7 = "<td><div class='progress'><div class='progress-bar bg-success' style='width:" + result[i].ArmourBat +"%;'>" + result[i].ArmourBat + "% </div></div></td>";
+
+        }else if(result[i].ArmourBat>30){
+
+          var bit7 = "<td><div class='progress'><div class='progress-bar bg-warning' style='width:" + result[i].ArmourBat +"%;'>" + result[i].ArmourBat + "% </div></div></td>";
+
+        }else{
+
+          var bit7 = "<td><div class='progress'><div class='progress-bar bg-danger' style='width:" + result[i].ArmourBat +"%;'>" + result[i].ArmourBat + "% </div></div></td>";
+
+        }
+
+        //8th variable displays Hub battery level, changes from green to orange to red as battery level drops.
+        if(result[i].HubBattery>60){
+
+          var bit8 = "<td><div class='progress'><div class='progress-bar bg-success' style='width:" + result[i].ArmourBat +"%;'>" + result[i].ArmourBat + "% </div></div></td>";
+
+        }else if(result[i].HubBattery>30){
+
+          var bit8 = "<td><div class='progress'><div class='progress-bar bg-warning' style='width:" + result[i].ArmourBat +"%;'>" + result[i].ArmourBat + "% </div></div></td>";
+
+        }else{
+
+          var bit8 = "<td><div class='progress'><div class='progress-bar bg-danger' style='width:" + result[i].ArmourBat +"%;'>" + result[i].ArmourBat + "% </div></div></td>";
+
+        }
+
+        //Concatenates variables together to create table row to be displayed on the web page.
+        var row = bit1 + bit2 + bit3 + bit4 + bit5 + bit6 + bit7 + bit8;
+
+        $("#section tbody").append(row);//adds the row created from the json data to the table body.
+
+      });
+
+    });
+
+  }
+
+  $(document).ready(function(){
+
+    update();//initial call of update function to display values when web page is viewed.
+
+    setInterval(function()//calls update function every 5 seconds to update page.
+    {
+      update();
+    },5000)
+  });
+
+
+
+</script>
+
+{% endblock %}
+
+
+{% block  content %}<!--Extends content from the base html page-->
+
+
+<div class="jumbotron"><!--Adds jumbotron style to page-->
+  <h1>List of Section Members</h1><!--Displays name of table-->
+
+<!--Creates table to display data, bootstrap class 'table' added to improve style of table id tag 'section' used by Javascript function to apply data to the table-->
+  <table id = "section" class="table">
+    <thead class="thead-dark"><!--Bootstrap style gives a dark backround to table headings-->
+      <tr><!--Table row-->
+        <th scope="col">Service<br>Number </th><!--Column heading-->
+        <th scope="col">Name</th><!--Column heading-->
+        <th scope="col">Role</th><!--Column heading-->
+        <th scope="col">ID Check </th><!--Column heading-->
+        <th scope="col">Heart<br>Rate </th><!--Column heading-->
+        <th scope="col">Location</th><!--Column heading-->
+        <th scope="col">Distance<br>Traveled </th><!--Column heading-->
+        <th scope="col">Last<br>Updated</th><!--Column heading-->
+        <th scope="col">Rounds Fired </th><!--Column heading-->
+        <th scope="col">Rifle<br>Battery </th><!--Column heading-->
+        <th scope="col">Casualty </th><!--Column heading-->
+        <th scope="col">Armour<br>Battery </th><!--Column heading-->
+        <th scope="col">Hub<br>Battery </th><!--Column heading-->
+      </tr><!--Table row end-->
+    </thead>
+    <tbody>
+
+
+
+
+
+    </tbody>
+  </table>
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}<!--Extends content from the base html page-->
+{% block  content %}<!--Extends content from the base html page-->
+<div class="jumbotron"><!--Adds bootstrap jumbotron style to page -->
+  <h1>Add Amunition to Section</h1><!--Prints name of page to user -->
+  <p>Fill in Section Number, and Ammunition to Add amunition to that Section.</p><!--Prints instructions to the user -->
+  <form method="POST"><!--Form opening tag with post method included -->
+    {{form.hidden_tag()}}
+    {{form.id.label}} {{form.id()}}<!--input section number -->
+    {{form.SectionAmmo.label}} {{form.SectionAmmo()}}<!--input total ammunition for the section -->
+    {{form.submit()}}<!--Submit button for form press to send form information to flask -->
+
+  </form>
+
+</div>
+
+{% endblock %}
