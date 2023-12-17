@@ -2,20 +2,20 @@ import math
 
 #This function take latitude and longitude as arguments and returns an irish OS map 10 figure Grid reference.
 def OS_GRID(lat, lon):
+    """
+    Converts latitude and longitude coordinates to an Irish OS map 10-figure grid reference.
+
+    Parameters:
+    - lat (float): Latitude in decimal degrees.
+    - lon (float): Longitude in decimal degrees.
+
+    Returns:
+    - str: Irish OS map 10-figure grid reference.
+    """
     deg2rad = math.pi/ 180
     rad2deg = 180.0 / math.pi
     phi = lat * deg2rad      # convert latitude to radians
     lam = lon * deg2rad   # convert longitude to radians
-
-    #British OS model
-    #a = 6377563.396      # OSGB semi-major axis
-    #b = 6356256.91       # OSGB semi-minor axis
-    #e0 = 400000          # OSGB easting of false origin
-    #n0 = -100000         # OSGB northing of false origin
-    #f0 = 0.9996012717     # OSGB scale factor on central meridian
-    #e2 = 0.0066705397616  # OSGB eccentricity squared
-    #lam0 = -0.034906585039886591  # OSGB false east
-    #phi0 = 0.85521133347722145    # OSGB false north
 
     #Irish OS model
     a = 6377340.189      # OSI semi-major
@@ -63,13 +63,35 @@ def OS_GRID(lat, lon):
     return nrg
 
 def Marc(bf0, n, phi0, phi):
-     Marc = bf0 * (((1 + n + ((5 / 4) * (n * n)) + ((5 / 4) * (n * n * n))) * (phi - phi0))
-      - (((3 * n) + (3 * (n * n)) + ((21 / 8) * (n * n * n))) * (math.sin(phi - phi0)) * (math.cos(phi + phi0)))
-      + ((((15 / 8) * (n * n)) + ((15 / 8) * (n * n * n))) * (math.sin(2 * (phi - phi0))) * (math.cos(2 * (phi + phi0))))
-      - (((35 / 24) * (n * n * n)) * (math.sin(3 * (phi - phi0))) * (math.cos(3 * (phi + phi0)))))
-     return Marc
+    """
+    Calculates the Marc term used in the OS_GRID function.
+
+    Parameters:
+    - bf0 (float): Calculated constant.
+    - n (float): Calculated constant.
+    - phi0 (float): False north.
+    - phi (float): Latitude in radians.
+
+    Returns:
+    - float: Marc term.
+  """
+    Marc = bf0 * (((1 + n + ((5 / 4) * (n * n)) + ((5 / 4) * (n * n * n))) * (phi - phi0))
+    - (((3 * n) + (3 * (n * n)) + ((21 / 8) * (n * n * n))) * (math.sin(phi - phi0)) * (math.cos(phi + phi0)))
+    + ((((15 / 8) * (n * n)) + ((15 / 8) * (n * n * n))) * (math.sin(2 * (phi - phi0))) * (math.cos(2 * (phi + phi0))))
+    - (((35 / 24) * (n * n * n)) * (math.sin(3 * (phi - phi0))) * (math.cos(3 * (phi + phi0)))))
+    return Marc
 
 def NE2NGR(east, north):
+    """
+    Converts easting and northing values to an Irish OS map 10-figure grid reference.
+
+    Parameters:
+    - east (float): Easting value.
+    - north (float): Northing value.
+
+    Returns:
+    - str: Irish OS map 10-figure grid reference.
+    """
     eX = east / 500000
     nX = north / 500000
     tmp = math.floor(eX)-5.0 * math.floor(nX)+17.0
@@ -88,10 +110,3 @@ def NE2NGR(east, north):
     ngr = chr(int(eX) + 65) + " " + eing + " " + ning
     return ngr
 
-
-
-
-#lat = 53.79805
-#lon = -9.52404
-
-#print(LLtoNE(lat, lon))
