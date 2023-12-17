@@ -27,7 +27,10 @@ Migrate(app,db)#create migration object.
 
 ##########Tables#########################
 
-class Section(db.Model):#Table for overview of section, tracks overall state of the section.
+class Section(db.Model):
+    """
+    Table for the overview of the section, tracks the overall state of the section.
+    """
 
     __tablename__ = 'Section'#name of the table.
 
@@ -40,12 +43,20 @@ class Section(db.Model):#Table for overview of section, tracks overall state of 
     SectionBattery = db.Column(db.Text)#battery level indication for Section database.
     Soldier = db.relationship('Soldier', backref = 'section', lazy='dynamic')#relationship to table soldiers.
 
-    def __init__(self,id,SectionAmmo):#function used to create a new section. To create the section it requires an entry of an id number and ammunition.
+    def __init__(self,id,SectionAmmo):
+        """
+        Function used to create a new section. To create the section, it requires an entry of an id number and ammunition.
+        :param id: Identifying number of the section, must be unique.
+        :param SectionAmmo: Sections starting ammunition.
+        """
         self.id = id#Identifying number of the section must be unique.
         self.SectionAmmo = SectionAmmo#Sections starting ammunition.
 
 
-class Soldier(db.Model):#Table for soldiers in section, gives more detailed information on each soldier.
+class Soldier(db.Model):
+    """
+    Table for soldiers in the section, gives more detailed information on each soldier.
+    """
 
     __tablename__='soldiers'#Table name.
 
@@ -66,15 +77,35 @@ class Soldier(db.Model):#Table for soldiers in section, gives more detailed info
     HubBattery = db.Column(db.Text)#Battery level of sensor hub.
     Distance = db.Column(db.Text)#Stores distance traveled by soldier.
 
-    #function used to create a new section Member. To add Soldier requires an entry of an id number, a name, Role in the section and the section they are in.
+
     def __init__(self,id,name,role,section_id):
+        """
+        Function used to create a new section member. To add a soldier requires an entry of an id number, a name,
+        the role in the section, and the section they are in.
+        :param id: Army number.
+        :param name: Soldier's name.
+        :param role: Soldier's role in the section.
+        :param section_id: Section the soldier belongs to.
+        """
         self.id = id#Army number.
         self.name=name#Soldiers name.
         self.role=role#Soldiers role in the section.
         self.section_id = section_id#Section soldier belongs to.
 
 
-class vitals(db.Model):#table for record of soldiers vital signs
+class vitals(db.Model):
+    """
+    Table for a record of a soldier's vital signs.
+
+    Attributes:
+    - id (int): ID number of the entry in the database, automatically generated unique primary key.
+    - HR (int): Heart rate of the soldier.
+    - TIME (str): Time when the heart rate entry was made.
+    - soldier_id (int): ID number of the soldier to whom the entry belongs.
+
+    Methods:
+    - __init__(self, HR, TIME, soldier_id): Initializes a new entry for heart rate for a soldier.
+    """
 
     __tablename__='vitals'#Name of table.
 
@@ -85,13 +116,38 @@ class vitals(db.Model):#table for record of soldiers vital signs
 
     #function used to create a new entry for heart rate for soldier.Automatically created from data sent from sensors.
     def __init__(self,HR,TIME,soldier_id):
+        """
+        Initializes a new entry for heart rate for a soldier. Automatically created from data sent from sensors.
+
+        Parameters:
+        - HR (int): Heart rate.
+        - TIME (str): Time of the entry.
+        - soldier_id (int): ID number of the soldier that the entry belongs to.
+        """
+
         self.HR = HR#Heart rate.
         self.TIME = TIME#Time of entry.
         self.soldier_id = soldier_id#ID number of soldier that the entry belongs to.
 
 
 
-class location(db.Model):#table for record of all locations soldiers has been
+class location(db.Model):
+    """
+    SQLAlchemy Model: Location
+
+    Table for a record of all locations a soldier has been.
+
+    Attributes:
+    - id (int): ID number of the entry in the database, automatically generated unique primary key.
+    - long (str): Longitude.
+    - lat (str): Latitude.
+    - GRID (str): Grid reference.
+    - TIME (str): Time when the location entry was made.
+    - soldier_id (int): ID number of the soldier.
+
+    Methods:
+    - __init__(self, long, lat, GRID, TIME, soldier_id): Initializes a new entry for the location of a soldier.
+    """
 
     __tablename__ = 'locations'#Table name.
 
@@ -116,11 +172,34 @@ class location(db.Model):#table for record of all locations soldiers has been
 ############View Functions#####################
 
 @app.route('/')#flask app displays home page
-def index():#function called when '/' called by flask app.
+def index():
+    """
+    Flask Route: '/'
+
+    Function to handle requests to the home page ('/'). This function is called when the root URL is accessed
+    by the Flask app. It renders the 'home.html' template and returns the HTML page to be displayed to the user.
+
+    Returns:
+    - str: Rendered HTML page ('home.html').
+    """
     return render_template('home.html')#Returns 'home.html' to be displayed to user.
 
 @app.route('/newSection', methods=['GET','POST'])#function to add a section
-def add_section():#function called when '/newSection' called by flask app.
+def add_section():
+    """
+    Flask Route: '/newSection' (GET and POST)
+
+    Function to handle requests for adding a new section. This function is called when the '/newSection' URL is
+    accessed by the Flask app, and it supports both GET and POST methods. It uses the 'CreateSection' form to gather
+    user input.
+
+    If the form is validated on submission, it extracts the section's ID and ammunition from the form, creates a new
+    section with default values, and adds it to the database. Then, it redirects to the 'SectionOverview' page.
+
+    Returns:
+    - str: Rendered HTML page ('newSection.html') with the 'CreateSection' form for creating a new section.
+            Or, redirects to the 'SectionOverview' page if a new section is successfully added.
+    """
     form = CreateSection()#adds CreateSection form to be used in function.
 
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
@@ -145,7 +224,22 @@ def add_section():#function called when '/newSection' called by flask app.
     return render_template('newSection.html',form=form)#Returns Html page for form to create a new section.
 
 @app.route('/Addamunition', methods=['GET','POST'])#function to add a section
-def add_ammo():#function called when '/Addamunition' called by flask app.
+def add_ammo():
+    """
+    Flask Route: '/Addamunition' (GET and POST)
+
+    Function to handle requests for adding ammunition to a section. This function is called when the '/Addamunition'
+    URL is accessed by the Flask app, and it supports both GET and POST methods. It uses the 'Addammo' form to gather
+    user input.
+
+    If the form is validated on submission, it extracts the section's ID and ammunition from the form, queries the
+    database to get the corresponding section, adds the ammunition to the section, and updates the database. Then, it
+    redirects to the 'SectionOverview' page.
+
+    Returns:
+    - str: Rendered HTML page ('Addamunition.html') with the 'Addammo' form for adding ammunition to a section.
+            Or, redirects to the 'SectionOverview' page if ammunition is successfully added to the section.
+    """
     form = Addammo()#adds form to be used in function.
 
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
@@ -165,13 +259,31 @@ def add_ammo():#function called when '/Addamunition' called by flask app.
     return render_template('Addamunition.html',form=form)#returns html page that displays page to add ammunition to section.
 
 @app.route('/SectionOverview')#Displays section overview to user
-def SectionOverview():#function called when '/' called by flask app.
+def SectionOverview():
+    """
+    Flask Route: '/SectionOverview'
+
+    Function to handle requests for displaying the section overview to the user. This function is called when the
+    '/SectionOverview' URL is accessed by the Flask app.
+
+    Returns:
+    - str: Rendered HTML page ('SectionOverview.html') containing the overview of the section.
+    """
 
     return render_template('SectionOverview.html')#Returns html page for overview of section.
 
 
 @app.route('/deleteSection',methods = ['POST','GET'])#Remove section
-def deleteSection():#function called when '/deleteSection' called by flask app.
+def deleteSection():
+    """
+    Flask Route: '/SectionOverview'
+
+    Function to handle requests for displaying the section overview to the user. This function is called when the
+    '/SectionOverview' URL is accessed by the Flask app.
+
+    Returns:
+    - str: Rendered HTML page ('SectionOverview.html') containing the overview of the section.
+    """
     form =DelSection()#adds form to be used in function.
 
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
@@ -194,7 +306,18 @@ def deleteSection():#function called when '/deleteSection' called by flask app.
 
 
 @app.route('/add', methods=['GET','POST'])#add person to section,uses army number as primary key to add member to section. initial values automatically given.
-def add_soldier():#function called when '/add' called by flask app.
+def add_soldier():
+    """
+    Flask Route: '/add'
+
+    Function to handle requests for adding a new soldier to a section. This function is called when the '/add' URL is accessed
+    by the Flask app. The function processes the form data submitted, creates a new soldier entry, and updates the section
+    information accordingly.
+
+    Returns:
+    - str or redirect: If the form is successfully validated and the soldier is added, it redirects to the 'list' page. If not,
+      it returns the HTML page ('add.html') for adding a new member to the section.
+    """
     form = AddForm()#adds form to be used in function.
 
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
@@ -231,7 +354,20 @@ def add_soldier():#function called when '/add' called by flask app.
     return render_template('add.html',form=form)#returns html page for form to add member to section.
 
 @app.route('/listHeartRate/<id>')#display  list of soldiers heart rate to user
-def listHeartRate(id):#function called when '/listHeartRate' called by flask app.
+def listHeartRate(id):
+    """
+    Flask Route: '/listHeartRate/<id>'
+
+    Function to handle requests for displaying a list of a soldier's heart rates. This function is called when the '/listHeartRate'
+    URL is accessed by the Flask app. It queries the database for all heart rate entries associated with the given soldier ID and also
+    retrieves the soldier's information. The data is then passed to the 'listHeartRate.html' template for rendering.
+
+    Args:
+    - id (str): Soldier ID for whom the heart rates are to be listed.
+
+    Returns:
+    - render_template: HTML page ('listHeartRate.html') that displays the list of heart rate entries for the selected soldier.
+    """
 
     Heart = vitals.query.filter_by(soldier_id = id ).all()#Queries all Entries in vitals table with soldier_id entered by user.
     person = Soldier.query.get_or_404(id)#Queries soldier using id number entered by user. Returns 404 message is entered id number does not exist in database.
@@ -240,7 +376,19 @@ def listHeartRate(id):#function called when '/listHeartRate' called by flask app
     return render_template('listHeartRate.html', Heart = Heart, person = person)#Returns html page that lists vitals entries of selected soldier.
 
 @app.route('/ViewHeart',methods = ['POST','GET'])#select which section members heart rate to view
-def ViewHeart():#function called when '/ViewHeart' called by flask app.
+def ViewHeart():
+    """
+    Flask Route: '/ViewHeart'
+
+    Function to handle requests for selecting which section member's heart rate to view. This function is called when the '/ViewHeart'
+    URL is accessed by the Flask app. It uses a form ('HeartForm') to get the ID number of the soldier for whom the heart rate entries
+    need to be viewed. If the form is validated, the function redirects to the 'listHeartRate' page for the selected soldier. Otherwise,
+    it renders the 'ViewHeart.html' template, which includes the form for soldier selection.
+
+    Returns:
+    - redirect or render_template: If the form is validated, redirects to the 'listHeartRate' page. Otherwise, renders 'ViewHeart.html'
+      with the soldier selection form.
+    """
     form =HeartForm()#adds form to be used in function.
 
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
@@ -250,14 +398,40 @@ def ViewHeart():#function called when '/ViewHeart' called by flask app.
     return render_template('ViewHeart.html',form=form)#Displays html page that for form to select soldier to view their vitals table entries.
 
 @app.route('/listLocation/<id>')#Select soldier to view  locations soldier has been
-def listLocation(id):#function called when '/listLocation' called by flask app.
+def listLocation(id):
+    """
+    Flask Route: '/listLocation/<id>'
+
+    Function to handle requests for selecting a soldier to view the locations they have been. This function is called when the '/listLocation'
+    URL is accessed by the Flask app. It queries the 'location' table to retrieve all entries with the soldier_id entered by the user. It also
+    queries the 'Soldier' table to get information about the soldier with the entered id. If the soldier does not exist, a 404 message is
+    returned. The function then renders the 'listLocation.html' template, which displays a list of all locations the soldier has been.
+
+    Args:
+    - id (int): The ID number of the soldier for whom the locations are to be viewed.
+
+    Returns:
+    - render_template: HTML page to display a list of all locations the soldier has been, along with relevant information about the soldier.
+    """
 
     Location = location.query.filter_by(soldier_id = id ).all()#Queries all Entries in location table with soldier_id entered by user.
     person = Soldier.query.get_or_404(id)#Queries soldier using id number entered by user. Returns 404 message is entered id number does not exist in database.
     return render_template('listLocation.html', Location = Location, person = person)#returns html page to display list of all locations soldier has been.
 
 @app.route('/ViewLocation',methods = ['POST','GET'])#displays locations soldier has been
-def ViewLocation():#function called when '/ViewLocation' called by flask app.
+def ViewLocation():
+    """
+    Flask Route: '/ViewLocation'
+
+    Function to handle requests for displaying the locations a soldier has been. This function is called when the '/ViewLocation'
+    URL is accessed by the Flask app. It uses the 'LocationForm' to get the soldier's ID from the user. If the form is validated upon
+    submission, the function redirects to the 'listLocation' route, passing the soldier's ID. This route displays a list of all
+    locations the soldier has been.
+
+    Returns:
+    - render_template: HTML page containing the form to select a soldier to view their locations.
+    - redirect: If the form is validated, redirects to the 'listLocation' route to display the locations of the selected soldier.
+    """
     form =LocationForm()#adds form to be used in function.
 
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
@@ -269,13 +443,32 @@ def ViewLocation():#function called when '/ViewLocation' called by flask app.
 
 
 @app.route('/list')#list all members in section
-def list():#function called when '/list' called by flask app.
+def list():
+    """
+    Flask Route: '/list'
+
+    Function to handle requests for listing all members in a section. This function is called when the '/list' URL is accessed
+    by the Flask app. It returns an HTML page ('list.html') that displays a list of soldiers in the section.
+
+    Returns:
+    - render_template: HTML page for displaying the list of soldiers in the section.
+    """
 
     return render_template('list.html')#Returns html page that that displays soldiers in section.
 
 
 @app.route('/section', methods = ['GET'])#sends section information to a page in json script format.
-def Sectionj_stuff():#function called when '/section' called by flask app.
+def Sectionj_stuff():
+    """
+    Flask Route: '/section'
+
+    Function to handle requests for section information in JSON script format. This function is called when the '/section'
+    URL is accessed by the Flask app using the GET method. It queries all section information from the database, formats it
+    into a list of dictionaries, each representing a section, and returns the result as a JSON script.
+
+    Returns:
+    - str: JSON script containing section information, formatted as a list of dictionaries.
+    """
 
     section = Section.query.all()#Queries all section information.
 
@@ -290,7 +483,17 @@ def Sectionj_stuff():#function called when '/section' called by flask app.
 
 
 @app.route('/soldiers', methods = ['GET'])#sends section information to a page in json script format.
-def Soldierj_stuff():#function called when '/soldiers' called by flask app.
+def Soldierj_stuff():
+    """
+    Flask Route: '/soldiers'
+
+    Function to handle requests for soldier information in JSON script format. This function is called when the '/soldiers'
+    URL is accessed by the Flask app using the GET method. It queries all soldier information from the database, formats it
+    into a list of dictionaries, each representing a soldier, and returns the result as a JSON script.
+
+    Returns:
+    - str: JSON script containing soldier information, formatted as a list of dictionaries.
+    """
 
     section = Soldier.query.all()#Queries all Soldier information.
 
@@ -307,7 +510,21 @@ def Soldierj_stuff():#function called when '/soldiers' called by flask app.
 
 
 @app.route('/delete',methods = ['POST','GET'])#remove soldier from section
-def del_soldier():#function called when '/delete' called by flask app.
+def del_soldier():
+    """
+    Flask Route: '/delete'
+
+    Function to handle requests for removing a soldier from a section. This function is called when the '/delete' URL
+    is accessed by the Flask app using the POST or GET method. It uses a form to get the soldier's ID, queries the
+    Soldier table using the ID, deletes the soldier's entry from the database, and updates the section information
+    accordingly.
+
+    Returns:
+    - redirect: Redirects to the '/list' URL to display the updated section information.
+
+    HTML Template:
+    - 'delete.html': Returns HTML page for the form to delete a section member if the form is not validated.
+    """
     form =DelForm()#adds form to be used in function.
 
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
@@ -327,7 +544,35 @@ def del_soldier():#function called when '/delete' called by flask app.
 
 
 @app.route('/input/<message>')#takes information sent by arduino and updated  database
-def input(message):#function called when '/' called by flask app.
+def input(message):
+    """
+    Flask Route: '/input/<message>'
+
+    Function to handle requests for updating the database with information sent by Arduino. This function is called when
+    the '/input/<message>' URL is accessed by the Flask app. The Arduino sends data, which is converted into a dictionary
+    using the 'Convert' function. The function then updates the Soldier table in the database based on the received data,
+    including time, identity verification, heart rate, location, distance traveled, ammunition fired, rifle battery,
+    body armor state, and body armor battery.
+
+    Args:
+    - message (str): Information sent by Arduino.
+
+    Returns:
+    - str: Returns "ok" as a message to the Arduino indicating that the update was successful.
+
+    Database Updates:
+    - Soldier table: Updates soldier's information based on the received data.
+    - Vitals table: Creates a new entry with heart rate information.
+    - Location table: Creates a new entry with location information.
+    - Section table: Updates section information based on the soldier's role, casualties, and ammunition fired.
+
+    Note:
+    - The function assumes the existence of the 'Convert' function, which is not provided in the code snippet.
+
+    Examples:
+    - Accessing '/input/123456?HR=80&Ident=1&long=40.7128&lat=-74.0060&TIME=12:00&Rndsfired=5&RifleBat=80&State=1&ArmourBat=90'
+      would update the database for the soldier with ID 123456 based on the provided data.
+    """
 
     message_dict = Convert(message)#calls function to convert data sent from arduino to dictionary.
 
