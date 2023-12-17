@@ -1,6 +1,15 @@
 
-def Convert(message):#function converts information sent by arduino to information that ca be entered in the database.
-    #when message is recieved as a comma and colon seperated string uses an inline for loop to
+def Convert(message):
+    """
+    Convert information sent by Arduino to a dictionary.
+
+    Parameters:
+    - message (str): A comma and colon-separated string.
+
+    Returns:
+    - dict: A dictionary containing parsed values from the string.
+    """
+   
     #split the string at every ':' and ',' and convert it to a dictionary
     message_dict=dict(u.split(":") for u in message.split(","))
     #all values in the dictionary are of type String. the following for loop finds the values that need to be integers and converts them

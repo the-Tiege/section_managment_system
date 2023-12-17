@@ -8,7 +8,17 @@ from wtforms import StringField, SelectField, IntegerField,SubmitField
 #id is the variable that is returned to the server and 'Service No:' is the label displayed to the user.
 #Information gathered using the forms is returned when the submit button is pressed.
 
-class AddForm(FlaskForm):#form used to add a member to the section.
+class AddForm(FlaskForm):
+    """
+    Form used to add a member to the section.
+
+    Attributes:
+    - id (IntegerField): Stores Army number to be sent to the server.
+    - name (StringField): Stores the name to be sent to the server.
+    - section_id (IntegerField): Stores Section number to be sent to the server.
+    - role (SelectField): Displays a list of different choices for the role of a section member.
+    - submit (SubmitField): Submits the form when the button is pressed.
+    """
 
     id = IntegerField('Service No : ')#Stores Army number to be sent to server.
     name = StringField('Name : ')##Stores name to be sent to server.
@@ -19,36 +29,80 @@ class AddForm(FlaskForm):#form used to add a member to the section.
                         ("6 Rifleman","6 Rifleman"),("7 Rifleman","7 Rifleman"),("8 Rifleman","8 Rifleman"),("1 FSG","1 FSG"),("2 FSG","2 FSG")])
     submit = SubmitField('Add to Section ')#Submits form when button pressed.
 
-class DelForm(FlaskForm):#form used to remove section member.
+class DelForm(FlaskForm):
+    """
+    Form used to remove a section member.
+
+    Attributes:
+    - id (IntegerField): Stores Army number to be sent to the server.
+    - submit (SubmitField): Submits the form when the button is pressed.
+    """
 
     id = IntegerField('Service Number : ')#Stores Army number to be sent to server.
     submit = SubmitField('Remove from Section')#Submits form when button pressed
 
 
-class CreateSection(FlaskForm):#form used to create a new section.
+class CreateSection(FlaskForm):
+    """
+    Form used to create a new section.
+
+    Attributes:
+    - id (IntegerField): Stores Section number to be sent to the server.
+    - SectionAmmo (IntegerField): Stores the amount of ammunition the section has on creation.
+    - submit (SubmitField): Submits the form when the button is pressed.
+    """
 
     id = IntegerField('Section Number : ')#Stores Section number to be sent to server.
     SectionAmmo = IntegerField('Amunition : ')#Stores ammount of ammunition section has on creation.
     submit = SubmitField('Create Section ')#Submits form when button pressed.
 
-class Addammo(FlaskForm):#form used to add amunition to the section.
+class Addammo(FlaskForm):
+    """
+    Form used to add ammunition to the section.
+
+    Attributes:
+    - id (IntegerField): Stores Section number to be sent to the server.
+    - SectionAmmo (IntegerField): Stores the amount of ammunition to be added.
+    - submit (SubmitField): Submits the form when the button is pressed.
+    """
 
     id = IntegerField('Section Number : ')#Stores Section number to be sent to server.
     SectionAmmo = IntegerField('Amunition : ')#Stores ammount of ammunition section has on creation.
     submit = SubmitField('Add Amunition')#Submits form when button pressed.
 
 
-class DelSection(FlaskForm):#form used to delete entire section.
+class DelSection(FlaskForm):
+    """
+    Form used to delete an entire section.
+
+    Attributes:
+    - id (IntegerField): Stores Section number to be sent to the server.
+    - submit (SubmitField): Submits the form when the button is pressed.
+    """
 
     id = IntegerField('Section Number : ')#Stores Section number to be sent to server.
     submit = SubmitField('Remove Section')#Submits form when button pressed.
 
-class HeartForm(FlaskForm):#form used to select soldier to display a list of their heart rate at different times.
+class HeartForm(FlaskForm):
+    """
+    Form used to select a soldier to display a list of their heart rate at different times.
+
+    Attributes:
+    - id (IntegerField): Stores Army number to be sent to the server.
+    - submit (SubmitField): Submits the form when the button is pressed.
+    """
 
     id = IntegerField('ID number : ')#Stores Army number to be sent to server.
     submit = SubmitField('View')#Submits form when button pressed.
 
-class LocationForm(FlaskForm):#form used to select soldier to display a list of their location at different times.
+class LocationForm(FlaskForm):
+    """
+    Form used to select a soldier to display a list of their location at different times.
+
+    Attributes:
+    - id (IntegerField): Stores Army number to be sent to the server.
+    - submit (SubmitField): Submits the form when the button is pressed.
+    """
 
     id = IntegerField('ID number : ')#Stores Army number to be sent to server.
     submit = SubmitField('View')#Submits form when button pressed.
