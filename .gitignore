@@ -41,7 +41,7 @@ config.py
 node_modules/
 
 # Flask-SQLAlchemy migrations
-/migrations/
+migrations/
 
 # Debugging files
 /Debugging/
