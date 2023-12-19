@@ -276,14 +276,20 @@ def SectionOverview():
 @app.route('/deleteSection',methods = ['POST','GET'])#Remove section
 def deleteSection():
     """
-    Flask Route: '/SectionOverview'
+    Route handler to remove a section along with its associated soldiers.
 
-    Function to handle requests for displaying the section overview to the user. This function is called when the
-    '/SectionOverview' URL is accessed by the Flask app.
+    This function handles HTTP GET and POST requests for deleting a section. If the provided form is validated,
+    it extracts the section ID and deletes all soldiers associated with that section. Finally, it deletes the
+    specified section from the database.
+
+    Parameters:
+    - None
 
     Returns:
-    - str: Rendered HTML page ('SectionOverview.html') containing the overview of the section.
+    - GET Request: Renders the 'deleteSection.html' template with the deletion form.
+    - POST Request: Redirects to the 'SectionOverview' route after successfully deleting the section and associated soldiers.
     """
+    
     form =DelSection()#adds form to be used in function.
 
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
