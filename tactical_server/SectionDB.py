@@ -194,11 +194,11 @@ def add_section():
     user input.
 
     If the form is validated on submission, it extracts the section's ID and ammunition from the form, creates a new
-    section with default values, and adds it to the database. Then, it redirects to the 'section_overview' page.
+    section with default values, and adds it to the database. Then, it redirects to the 'SectionOverview' page.
 
     Returns:
     - str: Rendered HTML page ('newSection.html') with the 'CreateSection' form for creating a new section.
-            Or, redirects to the 'section_overview' page if a new section is successfully added.
+            Or, redirects to the 'SectionOverview' page if a new section is successfully added.
     """
     form = CreateSection()#adds CreateSection form to be used in function.
 
@@ -218,7 +218,7 @@ def add_section():
 
 
 
-        return redirect(url_for('section_overview'))#Redirects to page that displays Section information.
+        return redirect(url_for('SectionOverview'))#Redirects to page that displays Section information.
 
 
     return render_template('newSection.html',form=form)#Returns Html page for form to create a new section.
@@ -234,11 +234,11 @@ def add_ammo():
 
     If the form is validated on submission, it extracts the section's ID and ammunition from the form, queries the
     database to get the corresponding section, adds the ammunition to the section, and updates the database. Then, it
-    redirects to the 'section_overview' page.
+    redirects to the 'SectionOverview' page.
 
     Returns:
     - str: Rendered HTML page ('Addamunition.html') with the 'Addammo' form for adding ammunition to a section.
-            Or, redirects to the 'section_overview' page if ammunition is successfully added to the section.
+            Or, redirects to the 'SectionOverview' page if ammunition is successfully added to the section.
     """
     form = Addammo()#adds form to be used in function.
 
@@ -253,24 +253,24 @@ def add_ammo():
         db.session.commit()#Saves change to database.
 
 
-        return redirect(url_for('section_overview'))#redirects to page that displays section information.
+        return redirect(url_for('SectionOverview'))#redirects to page that displays section information.
 
 
     return render_template('Addamunition.html',form=form)#returns html page that displays page to add ammunition to section.
 
-@app.route('/section_overview')#Displays section overview to user
-def section_overview():
+@app.route('/SectionOverview')#Displays section overview to user
+def SectionOverview():
     """
-    Flask Route: '/section_overview'
+    Flask Route: '/SectionOverview'
 
     Function to handle requests for displaying the section overview to the user. This function is called when the
-    '/section_overview' URL is accessed by the Flask app.
+    '/SectionOverview' URL is accessed by the Flask app.
 
     Returns:
-    - str: Rendered HTML page ('section_overview.html') containing the overview of the section.
+    - str: Rendered HTML page ('SectionOverview.html') containing the overview of the section.
     """
 
-    return render_template('section-overview.html')#Returns html page for overview of section.
+    return render_template('SectionOverview.html')#Returns html page for overview of section.
 
 
 @app.route('/deleteSection',methods = ['POST','GET'])#Remove section
@@ -287,7 +287,7 @@ def deleteSection():
 
     Returns:
     - GET Request: Renders the 'deleteSection.html' template with the deletion form.
-    - POST Request: Redirects to the 'section_overview' route after successfully deleting the section and associated soldiers.
+    - POST Request: Redirects to the 'SectionOverview' route after successfully deleting the section and associated soldiers.
     """
     
     form =DelSection()#adds form to be used in function.
@@ -307,7 +307,7 @@ def deleteSection():
 
 
 
-        return redirect(url_for('section_overview'))#redirects to page that displays section information.
+        return redirect(url_for('SectionOverview'))#redirects to page that displays section information.
     return render_template('deleteSection.html',form=form)#Returns html page of form to delete section.
 
 
