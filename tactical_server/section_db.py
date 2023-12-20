@@ -616,8 +616,8 @@ def del_soldier():
         db.session.commit()#Saves change to database.
 
         update_section = Section.query.get(soldier.section_id)#Queries Section table using section id of soldier.
-        update_section.section_strength = update_section.section_strength - 1#Takes one from section Strength for person removed from section.
-        update_section.section_ok = update_section.section_ok - 1#Takes one from section Ok for person removed from section..
+        update_section.section_strength -= 1#Takes one from section Strength for person removed from section.
+        update_section.section_ok -= 1#Takes one from section Ok for person removed from section..
         db.session.add(update_section)#Adds updated information to database.
         db.session.commit()#Saves change to database.
 
