@@ -260,12 +260,12 @@ def index():
     """
     return render_template('index.html')#Returns 'home.html' to be displayed to user.
 
-@app.route('/newSection', methods=['GET','POST'])#function to add a section
+@app.route('/add-section', methods=['GET','POST'])#function to add a section
 def add_section():
     """
-    Flask Route: '/newSection' (GET and POST)
+    Flask Route: '/add-section' (GET and POST)
 
-    Function to handle requests for adding a new section. This function is called when the '/newSection' URL is
+    Function to handle requests for adding a new section. This function is called when the '/add-section' URL is
     accessed by the Flask app, and it supports both GET and POST methods. It uses the 'CreateSection' form to gather
     user input.
 
@@ -273,7 +273,7 @@ def add_section():
     section with default values, and adds it to the database. Then, it redirects to the 'SectionOverview' page.
 
     Returns:
-    - str: Rendered HTML page ('newSection.html') with the 'CreateSection' form for creating a new section.
+    - str: Rendered HTML page ('add-section.html') with the 'CreateSection' form for creating a new section.
             Or, redirects to the 'SectionOverview' page if a new section is successfully added.
     """
     form = CreateSection()#adds CreateSection form to be used in function.
@@ -297,7 +297,7 @@ def add_section():
         return redirect(url_for('SectionOverview'))#Redirects to page that displays Section information.
 
 
-    return render_template('newSection.html',form=form)#Returns Html page for form to create a new section.
+    return render_template('add-section.html',form=form)#Returns Html page for form to create a new section.
 
 @app.route('/Addamunition', methods=['GET','POST'])#function to add a section
 def add_ammo():
