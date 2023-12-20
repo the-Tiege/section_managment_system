@@ -64,18 +64,18 @@ class Soldier(db.Model):
     name = db.Column(db.Text)#Soldiers name.
     role = db.Column(db.Text)#Role of section member.
     section_id = db.Column(db.Integer,db.ForeignKey('Section.id'))#ID number of section that soldier belongs to.
-    Ident = db.Column(db.Text)#USed to verify soldiers identity.
+    identity_check = db.Column(db.Text)#USed to verify soldiers identity.
     vitals = db.relationship('vitals',backref = 'soldiers', lazy = 'dynamic')#Link  to table that  lists soldiers heart rate over time.
-    location = db.relationship('location', backref = 'soldiers', lazy = 'dynamic')#Link to table that lists soldiers location over times.
-    currentLocation = db.Column(db.Text)#Stores current location of soldier.
-    LastHR = db.Column(db.Integer)#Stores most recent record of soldiers location.
-    TIME = db.Column(db.Text)#Stores time of last update.
-    Rndsfired = db.Column(db.Integer)#Stores number of rounds fired by soldier.
-    RifleBat = db.Column(db.Text)#Stores battery level of Ammunition tracker.
-    State = db.Column(db.Text)#Stores Status of soldier.
-    ArmourBat = db.Column(db.Text)#Stores battery level of body armour sensor.
-    HubBattery = db.Column(db.Text)#Battery level of sensor hub.
-    Distance = db.Column(db.Text)#Stores distance traveled by soldier.
+    location_history = db.relationship('location', backref = 'soldiers', lazy = 'dynamic')#Link to table that lists soldiers location over times.
+    current_location = db.Column(db.Text)#Stores current location of soldier.
+    last_heart_rate = db.Column(db.Integer)#Stores most recent record of soldiers location.
+    last_update_time = db.Column(db.Text)#Stores time of last update.
+    ammunition_expended = db.Column(db.Integer)#Stores number of rounds fired by soldier.
+    rifle_sensor_battery_level = db.Column(db.Text)#Stores battery level of Ammunition tracker.
+    status = db.Column(db.Text)#Stores Status of soldier.
+    armour_sensor_battery_level = db.Column(db.Text)#Stores battery level of body armour sensor.
+    hub_sensor_battery_level = db.Column(db.Text)#Battery level of sensor hub.
+    distance_traveled = db.Column(db.Text)#Stores distance traveled by soldier.
 
 
     def __init__(self,id,name,role,section_id):
@@ -93,7 +93,7 @@ class Soldier(db.Model):
         self.section_id = section_id#Section soldier belongs to.
 
 
-class vitals(db.Model):
+class Vitals(db.Model):
     """
     Table for a record of a soldier's vital signs.
 
@@ -110,12 +110,12 @@ class vitals(db.Model):
     __tablename__='vitals'#Name of table.
 
     id = db.Column(db.Integer, primary_key=True)#ID number of entry in database. automatically generated unique primary key.
-    HR = db.Column(db.Integer)#Heart rate of soldier.
-    TIME = db.Column(db.Text)#Time that heart rate entry was made.
+    heart_rate = db.Column(db.Integer)#Heart rate of soldier.
+    update_time = db.Column(db.Text)#Time that heart rate entry was made.
     soldier_id = db.Column(db.Integer,db.ForeignKey('soldiers.id'))#ID number of Soldier.
 
     #function used to create a new entry for heart rate for soldier.Automatically created from data sent from sensors.
-    def __init__(self,HR,TIME,soldier_id):
+    def __init__(self, heart_rate, time, soldier_id):
         """
         Initializes a new entry for heart rate for a soldier. Automatically created from data sent from sensors.
 
@@ -125,13 +125,13 @@ class vitals(db.Model):
         - soldier_id (int): ID number of the soldier that the entry belongs to.
         """
 
-        self.HR = HR#Heart rate.
-        self.TIME = TIME#Time of entry.
+        self.heart_rate = heart_rate#Heart rate.
+        self.update_time = time#Time of entry.
         self.soldier_id = soldier_id#ID number of soldier that the entry belongs to.
 
 
 
-class location(db.Model):
+class Location(db.Model):
     """
     SQLAlchemy Model: Location
 
@@ -154,16 +154,16 @@ class location(db.Model):
     id = db.Column(db.Integer, primary_key=True)#ID number of entry in database. automatically generated unique primary key.
     long = db.Column(db.Text)#longitude.
     lat = db.Column(db.Text)#latitude.
-    GRID = db.Column(db.Text)#Grid reference
-    TIME = db.Column(db.Text)#Time that heart rate entry was made.
+    grid_reference = db.Column(db.Text)#Grid reference
+    update_time = db.Column(db.Text)#Time that location entry was made.
     soldier_id = db.Column(db.Integer,db.ForeignKey('soldiers.id'))#ID number of soldier that the entry belongs to.
 
     #function used to create a new entry for location of soldier.Automatically created from data sent from sensors.
     def __init__(self,long,lat,GRID,TIME,soldier_id):
          self.long = long#Longitude.
          self.lat =lat#Latitude.
-         self.GRID = GRID#Grid reference.
-         self.TIME = TIME#Time location entry was made.
+         self.grid_reference = GRID#Grid reference.
+         self.update_time = TIME#Time location entry was made.
          self.soldier_id = soldier_id#ID number of soldier that the entry belongs to.
 
 
@@ -334,22 +334,22 @@ def add_soldier():
         section_id = form.section_id.data#Extracts Soldiers Section id from data entered in form.
 
         new_sol=Soldier(id,name,role,section_id)#Creates new soldier using data entered in form.
-        new_sol.Ident = "Unverified"#Sets initial for Identity verification.
-        new_sol.TIME = datetime.datetime.now().strftime("%X")#Sets initial for time using time extracted from computer clock.
-        new_sol.Rndsfired = 0#Sets initial value for ammunition fired by soldier to 0.
-        new_sol.LastHR = 0#Sets initial value for heart rate to 0.
-        new_sol.currentLocation = "0"#Sets initial value for location TO 0.
-        new_sol.RifleBat = "100"#Sets initial value for rifle battery to 100.
-        new_sol.State = "OK"#Sets initial value for State to "OK".
-        new_sol.ArmourBat = "100"#Sets initial value for Armour battery to 100.
-        new_sol.Distance ="0"#Sets initial values for Distance traveled to 0.
-        new_sol.HubBattery="100"#Sets initial value for HubBattery to 100.
+        new_sol.identity_check = "Unverified"#Sets initial for Identity verification.
+        new_sol.last_update_time = datetime.datetime.now().strftime("%X")#Sets initial for time using time extracted from computer clock.
+        new_sol.ammunition_expended = 0#Sets initial value for ammunition fired by soldier to 0.
+        new_sol.last_heart_rate = 0#Sets initial value for heart rate to 0.
+        new_sol.current_location = "0"#Sets initial value for location TO 0.
+        new_sol.rifle_sensor_battery_level = "100"#Sets initial value for rifle battery to 100.
+        new_sol.status = "OK"#Sets initial value for State to "OK".
+        new_sol.armour_sensor_battery_level = "100"#Sets initial value for Armour battery to 100.
+        new_sol.distance_traveled ="0"#Sets initial values for Distance traveled to 0.
+        new_sol.hub_sensor_battery_level="100"#Sets initial value for HubBattery to 100.
         db.session.add(new_sol)#adds soldier to database.
         db.session.commit()#Saves change to database.
 
         update_section = Section.query.get(section_id)#Queries Section table using section id of soldier.
-        update_section.SectionStrength = update_section.SectionStrength + 1#Adds one to section Strength for new person added to section.
-        update_section.SectionOK = update_section.SectionOK + 1#Adds one person to SectionOK for new person added to section.
+        update_section.section_strength = update_section.section_strength + 1#Adds one to section Strength for new person added to section.
+        update_section.section_ok = update_section.section_ok + 1#Adds one person to SectionOK for new person added to section.
         db.session.add(update_section)#Adds updated information to database.
         db.session.commit()#Saves change to database.
 
@@ -375,7 +375,7 @@ def listHeartRate(id):
     - render_template: HTML page ('listHeartRate.html') that displays the list of heart rate entries for the selected soldier.
     """
 
-    Heart = vitals.query.filter_by(soldier_id = id ).all()#Queries all Entries in vitals table with soldier_id entered by user.
+    Heart = Vitals.query.filter_by(soldier_id = id ).all()#Queries all Entries in vitals table with soldier_id entered by user.
     person = Soldier.query.get_or_404(id)#Queries soldier using id number entered by user. Returns 404 message is entered id number does not exist in database.
 
 
@@ -420,7 +420,7 @@ def listLocation(id):
     - render_template: HTML page to display a list of all locations the soldier has been, along with relevant information about the soldier.
     """
 
-    Location = location.query.filter_by(soldier_id = id ).all()#Queries all Entries in location table with soldier_id entered by user.
+    Location = Location.query.filter_by(soldier_id = id ).all()#Queries all Entries in location table with soldier_id entered by user.
     person = Soldier.query.get_or_404(id)#Queries soldier using id number entered by user. Returns 404 message is entered id number does not exist in database.
     return render_template('listLocation.html', Location = Location, person = person)#returns html page to display list of all locations soldier has been.
 
@@ -604,7 +604,7 @@ def input(message):
         db.session.commit()#Saves change to database.
 
         #Creates new entry in vitals table using data received from arduino and time from computer clock.
-        newVital = vitals(message_dict['HR'],datetime.datetime.now().strftime("%X"),message_dict['id'])
+        newVital = Vitals(message_dict['HR'],datetime.datetime.now().strftime("%X"),message_dict['id'])
         db.session.add(newVital)#Stores update to database.
         db.session.commit()#Saves change to database.
 
@@ -614,7 +614,7 @@ def input(message):
         db.session.commit()#Saves change to database.
 
         #Creates new entry in location table using data received from arduino and time from computer clock.
-        new_location = location(message_dict['long'],message_dict['lat'],OS_GRID(float(message_dict['lat']),float(message_dict['long'])),datetime.datetime.now().strftime("%X"),message_dict['id'])
+        new_location = Location(message_dict['long'],message_dict['lat'],OS_GRID(float(message_dict['lat']),float(message_dict['long'])),datetime.datetime.now().strftime("%X"),message_dict['id'])
         db.session.add(new_location)#Stores update to database.
         db.session.commit()#Saves change to database.
 
@@ -624,7 +624,7 @@ def input(message):
             db.session.add(updateSection)#Stores update to database.
             db.session.commit()#Saves change to database.
 
-        Traveled = location.query.filter_by(soldier_id =message_dict['id']).all()#Queries table of locations using Id number of soldier and returns all entries.
+        Traveled = Location.query.filter_by(soldier_id =message_dict['id']).all()#Queries table of locations using Id number of soldier and returns all entries.
         if len(Traveled)>1:#If there is more that one entry for location gets the distance between those locations.
             dist = 0#Stores distance traveled.
             i = 0#used to increment through array in while loop.
