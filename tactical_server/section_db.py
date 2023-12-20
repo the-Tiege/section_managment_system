@@ -256,9 +256,9 @@ def index():
     by the Flask app. It renders the 'home.html' template and returns the HTML page to be displayed to the user.
 
     Returns:
-    - str: Rendered HTML page ('home.html').
+    - str: Rendered HTML page ('index.html').
     """
-    return render_template('home.html')#Returns 'home.html' to be displayed to user.
+    return render_template('index.html')#Returns 'home.html' to be displayed to user.
 
 @app.route('/newSection', methods=['GET','POST'])#function to add a section
 def add_section():
