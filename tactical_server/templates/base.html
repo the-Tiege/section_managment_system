@@ -33,19 +33,19 @@
                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Update Section</a><!--drop down link for options to update the section -->
                  <div class="dropdown-menu">
                   <a class = "dropdown-item" href="{{url_for('add_section')}}">Create Section</a><!--Link to a page to add a section -->
-                  <a class = "dropdown-item" href="{{url_for('deleteSection')}}">Remove Section</a><!--Link to a page to remove a section member -->
+                  <a class = "dropdown-item" href="{{url_for('delete_section')}}">Remove Section</a><!--Link to a page to remove a section member -->
                   <a class = "dropdown-item" href="{{url_for('add_soldier')}}">Add to Section</a><!--Link to a page to Add a person to the section -->
-                  <a class = "dropdown-item" href="{{url_for('del_soldier')}}">Remove from Section</a><!--Link to a page to remove a person from the section -->
+                  <a class = "dropdown-item" href="{{url_for('delete_soldier')}}">Remove from Section</a><!--Link to a page to remove a person from the section -->
                   <a class = "dropdown-item" href="{{url_for('add_ammo')}}">Add Amunition to Section</a><!--Link to a page to Add ammunition to the section -->
                 </div>
             </li>
             <li class="nav-item dropdown"><!-- -->
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">View Section</a><!--drop down menu to view section -->
                   <div class="dropdown-menu">
-                    <a class = "dropdown-item" href="{{url_for('SectionOverview')}}">Section Overview</a><!--Displays Owerview of section information -->
-                    <a class = "dropdown-item" href="{{url_for('list')}}">List of Section</a><!--Displays a detailed list of all members of the section-->
-                    <a class = "dropdown-item" href="{{url_for('ViewHeart')}}">View Soldier Heart rate</a><!--Displays the heart rate over time of a selected soldier -->
-                    <a class = "dropdown-item" href="{{url_for('ViewLocation')}}">View Soldier Location</a><!--Views the location over time of the members of a section -->
+                    <a class = "dropdown-item" href="{{url_for('section_overview')}}">Section Overview</a><!--Displays Owerview of section information -->
+                    <a class = "dropdown-item" href="{{url_for('list_section_members')}}">List of Section</a><!--Displays a detailed list of all members of the section-->
+                    <a class = "dropdown-item" href="{{url_for('view_heart')}}">View Soldier Heart rate</a><!--Displays the heart rate over time of a selected soldier -->
+                    <a class = "dropdown-item" href="{{url_for('view_location')}}">View Soldier Location</a><!--Views the location over time of the members of a section -->
                   </div>
               </li>
         </ul>

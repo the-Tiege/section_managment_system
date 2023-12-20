@@ -1,5 +1,5 @@
 
-def Convert(message):
+def convert_to_dict(message):
     """
     Convert information sent by Arduino to a dictionary.
 
