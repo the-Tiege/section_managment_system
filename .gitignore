@@ -1,6 +1,9 @@
 # Virtual environment
 .venv/
 
+# Poetry
+pyproject.toml
+
 # Compiled Python files
 __pycache__/
 *.pyc
