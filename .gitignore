@@ -3,6 +3,7 @@
 
 # Poetry
 pyproject.toml
+poetry.lock
 
 # Compiled Python files
 __pycache__/
