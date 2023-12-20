@@ -35,22 +35,22 @@ class Section(db.Model):
     __tablename__ = 'Section'#name of the table.
 
     id = db.Column(db.Integer,primary_key = True)#section number used as primary key.
-    SectionAmmo = db.Column(db.Integer)#total ammunition in the section.
-    SectionStrength = db.Column(db.Integer)#Number of people in the section.
-    SectionOK = db.Column(db.Integer)#Soldiers in section who are uninjured.
-    SectionCasualty = db.Column(db.Integer)#Soldiers in section who have become casualties.
-    SectionLocation = db.Column(db.Text)#Location of section, Taken from section commanders location.
-    SectionBattery = db.Column(db.Text)#battery level indication for Section database.
+    section_amunition = db.Column(db.Integer)#total ammunition in the section.
+    section_strength = db.Column(db.Integer)#Number of people in the section.
+    section_ok = db.Column(db.Integer)#Soldiers in section who are uninjured.
+    section_casualty = db.Column(db.Integer)#Soldiers in section who have become casualties.
+    section_location = db.Column(db.Text)#Location of section, Taken from section commanders location.
+    section_battery = db.Column(db.Text)#battery level indication for Section database.
     Soldier = db.relationship('Soldier', backref = 'section', lazy='dynamic')#relationship to table soldiers.
 
-    def __init__(self,id,SectionAmmo):
+    def __init__(self,id,section_ammo):
         """
         Function used to create a new section. To create the section, it requires an entry of an id number and ammunition.
         :param id: Identifying number of the section, must be unique.
         :param SectionAmmo: Sections starting ammunition.
         """
         self.id = id#Identifying number of the section must be unique.
-        self.SectionAmmo = SectionAmmo#Sections starting ammunition.
+        self.section_amunition = section_ammo#Sections starting ammunition.
 
 
 class Soldier(db.Model):
@@ -208,11 +208,11 @@ def add_section():
         SectionAmmo = form.SectionAmmo.data#Extracts Ammunition from data entered in form.
 
         new_sec=Section(id,SectionAmmo)#Creates new section member form data entered in form.
-        new_sec.SectionStrength = 0#Sets initial value of section strength to 0.
-        new_sec.SectionOK = 0#Sets initial value of SectionOK to 0.
-        new_sec.SectionCasualty = 0#Sets initial value of Casualties in section to 0.
-        new_sec.SectionLocation = "0"#Sets initial value of location to 0.
-        new_sec.SectionBattery = "100"#Sets initial value of Battery to to 100.
+        new_sec.section_strength = 0#Sets initial value of section strength to 0.
+        new_sec.section_ok = 0#Sets initial value of SectionOK to 0.
+        new_sec.section_casualty = 0#Sets initial value of Casualties in section to 0.
+        new_sec.section_location = "0"#Sets initial value of location to 0.
+        new_sec.section_battery = "100"#Sets initial value of Battery to to 100.
         db.session.add(new_sec)#Takes object created from data taken from form and adds it to database.
         db.session.commit()#Saves change made to database.
 
