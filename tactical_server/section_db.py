@@ -1,31 +1,37 @@
 #######################Imports######################################
-import os#package used to get file path.
-import json#used to put data into json format.
-from json import dumps#used to put data into json format.
-import datetime#gets date and time from computer.
-from convert_to_dict import convert_to_dict#function to handle data sent from arduino.
-from lat_long_to_grid_reference import lat_long_to_grid_reference#converts lat and long to grid reference.
-from geopy import distance#function used to get distance between two gps locations.
-from Forms_section import AddForm, DelForm, CreateSection, DelSection, HeartForm, LocationForm, Addammo#forms to take input from user.
-from flask import Flask,render_template,url_for,redirect, jsonify#functions imported from flask package.
-from flask_sqlalchemy import SQLAlchemy#package used to handle data base.
-from flask_migrate import Migrate#used to manage changes to database.
+import datetime  # gets date and time from computer.
+import json  # used to put data into json format.
+import os  # package used to get file path.
 
-app = Flask(__name__)#creates flask app.
+from flask import (Flask, jsonify,  # functions imported from flask package.
+                   redirect, render_template, url_for)
+from flask_migrate import Migrate  # used to manage changes to database.
+from flask_sqlalchemy import SQLAlchemy  # package used to handle data base.
+from geopy import distance
+
+from convert_to_dict.convert_to_dict import \
+    convert_to_dict  # function to handle data sent from arduino.
+from forms_section.forms_section import (  # forms to take input from user.
+    Addammo, AddForm, CreateSection, DelForm, DelSection, HeartForm,
+    LocationForm)
+from lat_long_to_grid_reference.lat_long_to_grid_reference import \
+    lat_long_to_grid_reference  # converts lat and long to grid reference.
+
+app = Flask(__name__) #creates flask app.
 
 app.config['SECRET_KEY'] = 'mySecretKey'#used for encryption.
 
 
-##########Make SQL File##################
+########## Make SQL File ##################
 
-basdir = os.path.abspath(os.path.dirname(__file__))#gets path to current file.
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basdir,'section_db.sqlite')#creates sqlite database in same folder.
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False#turn off modification tracking.
+basdir = os.path.abspath(os.path.dirname(__file__)) #gets path to current file.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basdir,'section_db.sqlite') #creates sqlite database in same folder.
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #turn off modification tracking.
 
-db = SQLAlchemy(app)#create Sqlalchemy app.
-Migrate(app,db)#create migration object.
+db = SQLAlchemy(app) #create Sqlalchemy app.
+Migrate(app,db) #create migration object.
 
-##########Tables#########################
+########## Tables #########################
 
 class Section(db.Model):
     """
@@ -226,7 +232,7 @@ class Location(db.Model):
 
     #function used to create a new entry for location of soldier.Automatically created from data sent from sensors.
     def __init__(self,long,lat,grid,time,soldier_id):
-         """
+        """
         Initializes a new entry for the location of a soldier.
 
         Parameters:
@@ -236,18 +242,18 @@ class Location(db.Model):
             update_time (str): Time when the location entry was made.
             soldier_id (int): ID number of the soldier to whom the entry belongs.
         """
-         self.long = long#Longitude.
-         self.lat =lat#Latitude.
-         self.grid_reference = grid#Grid reference.
-         self.update_time = time#Time location entry was made.
-         self.soldier_id = soldier_id#ID number of soldier that the entry belongs to.
+        self.long = long#Longitude.
+        self.lat = lat#Latitude.
+        self.grid_reference = grid#Grid reference.
+        self.update_time = time#Time location entry was made.
+        self.soldier_id = soldier_id#ID number of soldier that the entry belongs to.
 
 
 
 ################################################
 ############View Functions#####################
 
-@app.route('/')#flask app displays home page
+@app.route('/') #flask app displays home page
 def index():
     """
     Flask Route: '/'
@@ -292,10 +298,7 @@ def add_section():
         db.session.add(new_sec)#Takes object created from data taken from form and adds it to database.
         db.session.commit()#Saves change made to database.
 
-
-
         return redirect(url_for('section_overview'))#Redirects to page that displays Section information.
-
 
     return render_template('add-section.html',form=form)#Returns Html page for form to create a new section.
 
@@ -365,25 +368,22 @@ def delete_section():
     - GET Request: Renders the 'delete-section.html' template with the deletion form.
     - POST Request: Redirects to the 'section-overview' route after successfully deleting the section and associated soldiers.
     """
-    
-    form =DelSection()#adds form to be used in function.
+
+    form = DelSection()#adds form to be used in function.
 
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
         id = form.id.data#Extracts id number from data entered in form
-
         soldiers = Soldier.query.filter_by(section_id = id).all()#When section is deleted. Queries all soldiers with same section id and deletes them.
+
         for i in soldiers:#for loop to iterate through soldiers returned by query.
             db.session.delete(i)#deletes soldier.
             db.session.commit()#saves change to database.
 
-
         section = Section.query.get_or_404(id)#Queries section using entered id data taken from form. Returns 404 message if no entry exists.
         db.session.delete(section)#Deletes section.
         db.session.commit()#Saves change to database.
-
-
-
         return redirect(url_for('section_overview'))#redirects to page that displays section information.
+    
     return render_template('delete-section.html',form=form)#Returns html page of form to delete section.
 
 
@@ -768,8 +768,6 @@ def sensor_data(message):
         db.session.commit()#Saves change to database.
 
     return "ok" #message returned to arduino by server.
-
-
 
 
 if __name__=='__main__':#if python is run as main file.
