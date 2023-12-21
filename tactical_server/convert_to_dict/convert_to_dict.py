@@ -1,5 +1,7 @@
 
-def convert_to_dict(message):
+import time
+
+def convert_to_dict(message, x_value):
     """
     Convert information sent by Arduino to a dictionary.
 
@@ -9,7 +11,7 @@ def convert_to_dict(message):
     Returns:
     - dict: A dictionary containing parsed values from the string.
     """
-   
+    x = number_yoke(9, 10)
     #split the string at every ':' and ',' and convert it to a dictionary
     message_dict=dict(u.split(":") for u in message.split(","))
     #all values in the dictionary are of type String. the following for loop finds the values that need to be integers and converts them
@@ -18,4 +20,10 @@ def convert_to_dict(message):
             message_dict[item]=int(message_dict[item])
         else:
             message_dict[item]=message_dict[item]
-    return message_dict#returns the dictionary of values parsed from the string.
+
+    message_dict['number'] = x
+    return message_dict, x_value() #returns the dictionary of values parsed from the string.
+
+
+def number_yoke(arg_1, arg_2):
+    return arg_1 + arg_2
