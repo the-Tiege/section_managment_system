@@ -3,14 +3,12 @@ import datetime  # gets date and time from computer.
 import json  # used to put data into json format.
 import os  # package used to get file path.
 
-from flask import (Flask, jsonify,  # functions imported from flask package.
-                   redirect, render_template, url_for)
+from flask import Flask, jsonify,  redirect, render_template, url_for
 from flask_migrate import Migrate  # used to manage changes to database.
 from flask_sqlalchemy import SQLAlchemy  # package used to handle data base.
 from geopy import distance
 
-from convert_to_dict.convert_to_dict import \
-    convert_to_dict  # function to handle data sent from arduino.
+from convert_to_dict.convert_to_dict import convert_to_dict
 from forms_section.forms_section import (  # forms to take input from user.
     Addammo, AddForm, CreateSection, DelForm, DelSection, HeartForm,
     LocationForm)
@@ -430,13 +428,13 @@ def add_soldier():
         db.session.commit()#Saves change to database.
 
 
-        return redirect(url_for('list'))#Redirects to html page that displays List of section members.
+        return redirect(url_for('list_section_members'))#Redirects to html page that displays List of section members.
 
 
     return render_template('add-soldier.html',form=form)#returns html page for form to add member to section.
 
 @app.route('/list-heart-rate/<id>')#display  list of soldiers heart rate to user
-def list__heart_rate(id):
+def list_heart_rate(id):
     """
     Flask Route: '/list-heart-rate/<id>'
 
@@ -476,7 +474,7 @@ def view_heart():
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
         id = form.id.data#Extracts id number from data entered in form
 
-        return redirect(url_for('list-heart-rate', id = id))#Redirects to html page to display vitals table entries for entered id number.
+        return redirect(url_for('list_heart_rate', id = id))#Redirects to html page to display vitals table entries for entered id number.
     return render_template('view-heart.html',form=form)#Displays html page that for form to select soldier to view their vitals table entries.
 
 @app.route('/list-location/<id>')#Select soldier to view  locations soldier has been
@@ -519,7 +517,7 @@ def view_location():
     if form.validate_on_submit():#if the form is validated when the submit button is pressed.
         id = form.id.data#Extracts id number from data entered in form
 
-        return redirect(url_for('list-location', id = id))#Redirects to webpage to display list of soldiers locations.
+        return redirect(url_for('list_location', id = id))#Redirects to webpage to display list of soldiers locations.
     return render_template('view-location.html',form=form)#Returns html for form to select soldier.
 
 

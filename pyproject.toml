@@ -4,6 +4,11 @@ version = "0.1.0"
 description = "Refactoring my 3rd year project section_managment_system"
 authors = ["the-Tiege"]
 readme = "README.md"
+packages = [
+    { include = "convert_to_dict", from = "tactical_server"},
+    { include = "forms_section", from = "tactical_server"},
+    { include = "lat_long_to_grid_reference", from = "tactical_server"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
