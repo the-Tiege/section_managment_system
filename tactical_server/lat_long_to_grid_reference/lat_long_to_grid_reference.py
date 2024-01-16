@@ -1,7 +1,7 @@
 import math
 
 #This function take latitude and longitude as arguments and returns an irish OS map 10 figure Grid reference.
-def OS_GRID(lat, lon):
+def lat_long_to_grid_reference(lat, lon):
     """
     Converts latitude and longitude coordinates to an Irish OS map 10-figure grid reference.
 

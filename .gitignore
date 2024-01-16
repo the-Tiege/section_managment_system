@@ -2,8 +2,9 @@
 .venv/
 
 # Compiled Python files
-__pycache__/
+*__pycache__* 
 *.pyc
+*.pyo
 
 # SQLite database file
 *.db
@@ -14,11 +15,6 @@ instance/
 
 # Environment variables file
 .env
-
-# Compiled files
-*.pyc
-*.pyo
-__pycache__/
 
 # Local development configuration
 config.py
