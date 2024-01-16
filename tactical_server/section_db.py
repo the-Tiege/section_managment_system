@@ -1,4 +1,4 @@
-#######################Imports######################################
+####################### Imports######################################
 import datetime  # gets date and time from computer.
 import json  # used to put data into json format.
 import os  # package used to get file path.
@@ -15,21 +15,26 @@ from forms_section.forms_section import (  # forms to take input from user.
 from lat_long_to_grid_reference.lat_long_to_grid_reference import \
     lat_long_to_grid_reference  # converts lat and long to grid reference.
 
-app = Flask(__name__) #creates flask app.
+app = Flask(__name__)  # creates flask app.
 
-app.config['SECRET_KEY'] = 'mySecretKey'#used for encryption.
+app.config['SECRET_KEY'] = 'mySecretKey'  # used for encryption.
 
 
 ########## Make SQL File ##################
 
-basdir = os.path.abspath(os.path.dirname(__file__)) #gets path to current file.
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(basdir,'section_db.sqlite') #creates sqlite database in same folder.
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False #turn off modification tracking.
+# gets path to current file.
+basdir = os.path.abspath(os.path.dirname(__file__))
+# creates sqlite database in same folder.
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+    os.path.join(basdir, 'section_db.sqlite')
+# turn off modification tracking.
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-db = SQLAlchemy(app) #create Sqlalchemy app.
-Migrate(app,db) #create migration object.
+db = SQLAlchemy(app)  # create Sqlalchemy app.
+Migrate(app, db)  # create migration object.
 
 ########## Tables #########################
+
 
 class Section(db.Model):
     """
@@ -50,24 +55,32 @@ class Section(db.Model):
     Methods:
         __init__(self, id, section_ammo):
             Initializes a new Section instance.
-            
+
             Args:
                 id (int): Identifying number of the section, must be unique.
                 section_ammo (int): Starting ammunition for the section.
     """
 
-    __tablename__ = 'sections'#name of the table.
+    __tablename__ = 'sections'  # name of the table.
 
-    id = db.Column(db.Integer, primary_key=True)#section number used as primary key.
-    section_amunition = db.Column(db.Integer)#total ammunition in the section.
-    section_strength = db.Column(db.Integer)#Number of people in the section.
-    section_ok = db.Column(db.Integer)#Soldiers in section who are uninjured.
-    section_casualty = db.Column(db.Integer)#Soldiers in section who have become casualties.
-    section_location = db.Column(db.Text)#Location of section, Taken from section commanders location.
-    section_battery = db.Column(db.Text)#battery level indication for Section database.
-    soldiers = db.relationship('Soldier', backref='sections', lazy='dynamic')#relationship to table soldiers.
+    # section number used as primary key.
+    id = db.Column(db.Integer, primary_key=True)
+    # total ammunition in the section.
+    section_amunition = db.Column(db.Integer)
+    # Number of people in the section.
+    section_strength = db.Column(db.Integer)
+    # Soldiers in section who are uninjured.
+    section_ok = db.Column(db.Integer)
+    # Soldiers in section who have become casualties.
+    section_casualty = db.Column(db.Integer)
+    # Location of section, Taken from section commanders location.
+    section_location = db.Column(db.Text)
+    # battery level indication for Section database.
+    section_battery = db.Column(db.Text)
+    # relationship to table soldiers.
+    soldiers = db.relationship('Soldier', backref='sections', lazy='dynamic')
 
-    def __init__(self,id,section_ammo):
+    def __init__(self, id, section_ammo):
         """
         Initializes a new section.
 
@@ -77,8 +90,8 @@ class Section(db.Model):
             id (int): Identifying number of the section, must be unique.
             section_ammo (int): Sections starting ammunition.
         """
-        self.id = id#Identifying number of the section must be unique.
-        self.section_amunition = section_ammo#Sections starting ammunition.
+        self.id = id  # Identifying number of the section must be unique.
+        self.section_amunition = section_ammo  # Sections starting ammunition.
 
 
 class Soldier(db.Model):
@@ -108,7 +121,7 @@ class Soldier(db.Model):
     Methods:
         __init__(self, id, name, role, section_id):
             Initializes a new Soldier instance.
-            
+
             Args:
                 id (int): Army number, must be unique.
                 name (str): Soldier's name.
@@ -116,27 +129,39 @@ class Soldier(db.Model):
                 section_id (int): Section ID to which the soldier belongs.
     """
 
-    __tablename__='soldiers'#Table name.
+    __tablename__ = 'soldiers'  # Table name.
 
-    id = db.Column(db.Integer,primary_key=True)#Army number  of soldier primary key. Must be unique.
-    name = db.Column(db.Text)#Soldiers name.
-    role = db.Column(db.Text)#Role of section member.
-    section_id = db.Column(db.Integer,db.ForeignKey('sections.id'))#ID number of section that soldier belongs to.
-    identity_check = db.Column(db.Text)#USed to verify soldiers identity.
-    vitals_history = db.relationship('Vitals', backref='soldier', lazy='dynamic')#Link  to table that  lists soldiers heart rate over time.
-    location_history = db.relationship('Location', backref='soldier', lazy='dynamic')#Link to table that lists soldiers location over times.
-    current_location = db.Column(db.Text)#Stores current location of soldier.
-    last_heart_rate = db.Column(db.Integer)#Stores most recent record of soldiers location.
-    last_update_time = db.Column(db.Text)#Stores time of last update.
-    ammunition_expended = db.Column(db.Integer)#Stores number of rounds fired by soldier.
-    rifle_sensor_battery_level = db.Column(db.Text)#Stores battery level of Ammunition tracker.
-    status = db.Column(db.Text)#Stores Status of soldier.
-    armour_sensor_battery_level = db.Column(db.Text)#Stores battery level of body armour sensor.
-    hub_sensor_battery_level = db.Column(db.Text)#Battery level of sensor hub.
-    distance_traveled = db.Column(db.Text)#Stores distance traveled by soldier.
+    # Army number  of soldier primary key. Must be unique.
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)  # Soldiers name.
+    role = db.Column(db.Text)  # Role of section member.
+    # ID number of section that soldier belongs to.
+    section_id = db.Column(db.Integer, db.ForeignKey('sections.id'))
+    identity_check = db.Column(db.Text)  # USed to verify soldiers identity.
+    # Link  to table that  lists soldiers heart rate over time.
+    vitals_history = db.relationship(
+        'Vitals', backref='soldier', lazy='dynamic')
+    # Link to table that lists soldiers location over times.
+    location_history = db.relationship(
+        'Location', backref='soldier', lazy='dynamic')
+    # Stores current location of soldier.
+    current_location = db.Column(db.Text)
+    # Stores most recent record of soldiers location.
+    last_heart_rate = db.Column(db.Integer)
+    last_update_time = db.Column(db.Text)  # Stores time of last update.
+    # Stores number of rounds fired by soldier.
+    ammunition_expended = db.Column(db.Integer)
+    # Stores battery level of Ammunition tracker.
+    rifle_sensor_battery_level = db.Column(db.Text)
+    status = db.Column(db.Text)  # Stores Status of soldier.
+    # Stores battery level of body armour sensor.
+    armour_sensor_battery_level = db.Column(db.Text)
+    # Battery level of sensor hub.
+    hub_sensor_battery_level = db.Column(db.Text)
+    # Stores distance traveled by soldier.
+    distance_traveled = db.Column(db.Text)
 
-
-    def __init__(self,id,name,role,section_id):
+    def __init__(self, id, name, role, section_id):
         """
         Initializes a new section member.
 
@@ -149,10 +174,10 @@ class Soldier(db.Model):
             role (str): Soldier's role in the section.
             section_id (int): Section the soldier belongs to.
         """
-        self.id = id#Army number.
-        self.name=name#Soldiers name.
-        self.role=role#Soldiers role in the section.
-        self.section_id = section_id#Section soldier belongs to.
+        self.id = id  # Army number.
+        self.name = name  # Soldiers name.
+        self.role = role  # Soldiers role in the section.
+        self.section_id = section_id  # Section soldier belongs to.
 
 
 class Vitals(db.Model):
@@ -173,15 +198,17 @@ class Vitals(db.Model):
 
     """
 
-    __tablename__='vitals'#Name of table.
+    __tablename__ = 'vitals'  # Name of table.
 
-    id = db.Column(db.Integer, primary_key=True)#ID number of entry in database. automatically generated unique primary key.
-    heart_rate = db.Column(db.Integer)#Heart rate of soldier.
-    update_time = db.Column(db.Text)#Time that heart rate entry was made.
-    soldier_id = db.Column(db.Integer,db.ForeignKey('soldiers.id'))#ID number of Soldier.
-    #soldier = db.relationship('Soldier', backref='vitals_history', lazy='dynamic')
+    # ID number of entry in database. automatically generated unique primary key.
+    id = db.Column(db.Integer, primary_key=True)
+    heart_rate = db.Column(db.Integer)  # Heart rate of soldier.
+    update_time = db.Column(db.Text)  # Time that heart rate entry was made.
+    # ID number of Soldier.
+    soldier_id = db.Column(db.Integer, db.ForeignKey('soldiers.id'))
+    # soldier = db.relationship('Soldier', backref='vitals_history', lazy='dynamic')
 
-    #function used to create a new entry for heart rate for soldier.Automatically created from data sent from sensors.
+    # function used to create a new entry for heart rate for soldier.Automatically created from data sent from sensors.
     def __init__(self, heart_rate, time, soldier_id):
         """
         Initializes a new entry for heart rate for a soldier.
@@ -192,10 +219,10 @@ class Vitals(db.Model):
             soldier_id (int): ID number of the soldier that the entry belongs to.
         """
 
-        self.heart_rate = heart_rate#Heart rate.
-        self.update_time = time#Time of entry.
-        self.soldier_id = soldier_id#ID number of soldier that the entry belongs to.
-
+        self.heart_rate = heart_rate  # Heart rate.
+        self.update_time = time  # Time of entry.
+        # ID number of soldier that the entry belongs to.
+        self.soldier_id = soldier_id
 
 
 class Location(db.Model):
@@ -218,18 +245,20 @@ class Location(db.Model):
 
     """
 
-    __tablename__ = 'locations'#Table name.
+    __tablename__ = 'locations'  # Table name.
 
-    id = db.Column(db.Integer, primary_key=True)#ID number of entry in database. automatically generated unique primary key.
-    long = db.Column(db.Text)#longitude.
-    lat = db.Column(db.Text)#latitude.
-    grid_reference = db.Column(db.Text)#Grid reference
-    update_time = db.Column(db.Text)#Time that location entry was made.
-    soldier_id = db.Column(db.Integer,db.ForeignKey('soldiers.id'))#ID number of soldier that the entry belongs to.
-    #soldier = db.relationship('Soldier', backref='location_history', lazy='dynamic')
+    # ID number of entry in database. automatically generated unique primary key.
+    id = db.Column(db.Integer, primary_key=True)
+    long = db.Column(db.Text)  # longitude.
+    lat = db.Column(db.Text)  # latitude.
+    grid_reference = db.Column(db.Text)  # Grid reference
+    update_time = db.Column(db.Text)  # Time that location entry was made.
+    # ID number of soldier that the entry belongs to.
+    soldier_id = db.Column(db.Integer, db.ForeignKey('soldiers.id'))
+    # soldier = db.relationship('Soldier', backref='location_history', lazy='dynamic')
 
-    #function used to create a new entry for location of soldier.Automatically created from data sent from sensors.
-    def __init__(self,long,lat,grid,time,soldier_id):
+    # function used to create a new entry for location of soldier.Automatically created from data sent from sensors.
+    def __init__(self, long, lat, grid, time, soldier_id):
         """
         Initializes a new entry for the location of a soldier.
 
@@ -240,18 +269,18 @@ class Location(db.Model):
             update_time (str): Time when the location entry was made.
             soldier_id (int): ID number of the soldier to whom the entry belongs.
         """
-        self.long = long#Longitude.
-        self.lat = lat#Latitude.
-        self.grid_reference = grid#Grid reference.
-        self.update_time = time#Time location entry was made.
-        self.soldier_id = soldier_id#ID number of soldier that the entry belongs to.
-
+        self.long = long  # Longitude.
+        self.lat = lat  # Latitude.
+        self.grid_reference = grid  # Grid reference.
+        self.update_time = time  # Time location entry was made.
+        # ID number of soldier that the entry belongs to.
+        self.soldier_id = soldier_id
 
 
 ################################################
-############View Functions#####################
+############ View Functions#####################
 
-@app.route('/') #flask app displays home page
+@app.route('/')  # flask app displays home page
 def index():
     """
     Flask Route: '/'
@@ -262,9 +291,11 @@ def index():
     Returns:
     - str: Rendered HTML page ('index.html').
     """
-    return render_template('index.html')#Returns 'home.html' to be displayed to user.
+    return render_template('index.html')  # Returns 'home.html' to be displayed to user.
 
-@app.route('/add-section', methods=['GET','POST'])#function to add a section
+
+# function to add a section
+@app.route('/add-section', methods=['GET', 'POST'])
 def add_section():
     """
     Flask Route: '/add-section' (GET and POST)
@@ -280,27 +311,38 @@ def add_section():
     - str: Rendered HTML page ('add-section.html') with the 'CreateSection' form for creating a new section.
             Or, redirects to the 'section-overview' page if a new section is successfully added.
     """
-    form = CreateSection()#adds CreateSection form to be used in function.
+    form = CreateSection()  # adds CreateSection form to be used in function.
 
-    if form.validate_on_submit():#if the form is validated when the submit button is pressed.
+    # if the form is validated when the submit button is pressed.
+    if form.validate_on_submit():
 
-        id  = form.id.data#Extracts id number from data entered in form.
-        SectionAmmo = form.SectionAmmo.data#Extracts Ammunition from data entered in form.
+        id = form.id.data  # Extracts id number from data entered in form.
+        # Extracts Ammunition from data entered in form.
+        SectionAmmo = form.SectionAmmo.data
 
-        new_sec=Section(id,SectionAmmo)#Creates new section member form data entered in form.
-        new_sec.section_strength = 0#Sets initial value of section strength to 0.
-        new_sec.section_ok = 0#Sets initial value of SectionOK to 0.
-        new_sec.section_casualty = 0#Sets initial value of Casualties in section to 0.
-        new_sec.section_location = "0"#Sets initial value of location to 0.
-        new_sec.section_battery = "100"#Sets initial value of Battery to to 100.
-        db.session.add(new_sec)#Takes object created from data taken from form and adds it to database.
-        db.session.commit()#Saves change made to database.
+        # Creates new section member form data entered in form.
+        new_sec = Section(id, SectionAmmo)
+        # Sets initial value of section strength to 0.
+        new_sec.section_strength = 0
+        new_sec.section_ok = 0  # Sets initial value of SectionOK to 0.
+        # Sets initial value of Casualties in section to 0.
+        new_sec.section_casualty = 0
+        new_sec.section_location = "0"  # Sets initial value of location to 0.
+        # Sets initial value of Battery to to 100.
+        new_sec.section_battery = "100"
+        # Takes object created from data taken from form and adds it to database.
+        db.session.add(new_sec)
+        db.session.commit()  # Saves change made to database.
 
-        return redirect(url_for('section_overview'))#Redirects to page that displays Section information.
+        # Redirects to page that displays Section information.
+        return redirect(url_for('section_overview'))
 
-    return render_template('add-section.html',form=form)#Returns Html page for form to create a new section.
+    # Returns Html page for form to create a new section.
+    return render_template('add-section.html', form=form)
 
-@app.route('/add-amunition', methods=['GET','POST'])#function to add a section
+
+# function to add a section
+@app.route('/add-amunition', methods=['GET', 'POST'])
 def add_ammo():
     """
     Flask Route: '/add-amunition' (GET and POST)
@@ -317,25 +359,30 @@ def add_ammo():
     - str: Rendered HTML page ('add-amunition.html') with the 'Addammo' form for adding ammunition to a section.
             Or, redirects to the 'section-overview' page if ammunition is successfully added to the section.
     """
-    form = Addammo()#adds form to be used in function.
+    form = Addammo()  # adds form to be used in function.
 
-    if form.validate_on_submit():#if the form is validated when the submit button is pressed.
+    # if the form is validated when the submit button is pressed.
+    if form.validate_on_submit():
 
-        id  = form.id.data#Extracts id number from data entered in form
-        amuntion_added = form.SectionAmmo.data#Extracts ammunition from data enter in form.
+        id = form.id.data  # Extracts id number from data entered in form
+        # Extracts ammunition from data enter in form.
+        amuntion_added = form.SectionAmmo.data
 
-        resupply=Section.query.get_or_404(id) #Queries database using entered id number returns 404 message if number entered is not in database.
-        resupply.section_amunition += amuntion_added #Takes ammunition added in form and adds it to section ammunition.
-        db.session.add(resupply) #Adds new entry to database.
-        db.session.commit() #Saves change to database.
+        # Queries database using entered id number returns 404 message if number entered is not in database.
+        resupply = Section.query.get_or_404(id)
+        # Takes ammunition added in form and adds it to section ammunition.
+        resupply.section_amunition += amuntion_added
+        db.session.add(resupply)  # Adds new entry to database.
+        db.session.commit()  # Saves change to database.
+
+        # redirects to page that displays section information.
+        return redirect(url_for('section_overview'))
+
+    # returns html page that displays page to add ammunition to section.
+    return render_template('add-amunition.html', form=form)
 
 
-        return redirect(url_for('section_overview'))#redirects to page that displays section information.
-
-
-    return render_template('add-amunition.html',form=form) #returns html page that displays page to add ammunition to section.
-
-@app.route('/section-overview') #Displays section overview to user
+@app.route('/section-overview')  # Displays section overview to user
 def section_overview():
     """
     Flask Route: '/section-overview'
@@ -347,10 +394,11 @@ def section_overview():
     - str: Rendered HTML page ('section-overview.html') containing the overview of the section.
     """
 
-    return render_template('section-overview.html')#Returns html page for overview of section.
+    # Returns html page for overview of section.
+    return render_template('section-overview.html')
 
 
-@app.route('/delete-section',methods = ['POST','GET'])#Remove section
+@app.route('/delete-section', methods=['POST', 'GET'])  # Remove section
 def delete_section():
     """
     Route handler to remove a section along with its associated soldiers.
@@ -367,25 +415,31 @@ def delete_section():
     - POST Request: Redirects to the 'section-overview' route after successfully deleting the section and associated soldiers.
     """
 
-    form = DelSection()#adds form to be used in function.
+    form = DelSection()  # adds form to be used in function.
 
-    if form.validate_on_submit():#if the form is validated when the submit button is pressed.
-        id = form.id.data#Extracts id number from data entered in form
-        soldiers = Soldier.query.filter_by(section_id = id).all()#When section is deleted. Queries all soldiers with same section id and deletes them.
+    # if the form is validated when the submit button is pressed.
+    if form.validate_on_submit():
+        id = form.id.data  # Extracts id number from data entered in form
+        # When section is deleted. Queries all soldiers with same section id and deletes them.
+        soldiers = Soldier.query.filter_by(section_id=id).all()
 
-        for i in soldiers:#for loop to iterate through soldiers returned by query.
-            db.session.delete(i)#deletes soldier.
-            db.session.commit()#saves change to database.
+        for i in soldiers:  # for loop to iterate through soldiers returned by query.
+            db.session.delete(i)  # deletes soldier.
+            db.session.commit()  # saves change to database.
 
-        section = Section.query.get_or_404(id)#Queries section using entered id data taken from form. Returns 404 message if no entry exists.
-        db.session.delete(section)#Deletes section.
-        db.session.commit()#Saves change to database.
-        return redirect(url_for('section_overview'))#redirects to page that displays section information.
-    
-    return render_template('delete-section.html',form=form)#Returns html page of form to delete section.
+        # Queries section using entered id data taken from form. Returns 404 message if no entry exists.
+        section = Section.query.get_or_404(id)
+        db.session.delete(section)  # Deletes section.
+        db.session.commit()  # Saves change to database.
+        # redirects to page that displays section information.
+        return redirect(url_for('section_overview'))
+
+    # Returns html page of form to delete section.
+    return render_template('delete-section.html', form=form)
 
 
-@app.route('/add-soldier', methods=['GET','POST'])#add person to section,uses army number as primary key to add member to section. initial values automatically given.
+# add person to section,uses army number as primary key to add member to section. initial values automatically given.
+@app.route('/add-soldier', methods=['GET', 'POST'])
 def add_soldier():
     """
     Flask Route: '/add-soldier'
@@ -398,42 +452,59 @@ def add_soldier():
     - str or redirect: If the form is successfully validated and the soldier is added, it redirects to the 'list' page. If not,
       it returns the HTML page ('add-soldier.html') for adding a new member to the section.
     """
-    form = AddForm()#adds form to be used in function.
+    form = AddForm()  # adds form to be used in function.
 
-    if form.validate_on_submit():#if the form is validated when the submit button is pressed.
+    # if the form is validated when the submit button is pressed.
+    if form.validate_on_submit():
 
-        id = form.id.data#Extracts id number from data entered in form
-        name = form.name.data#Extracts Soldiers name from data entered in form.
-        role = form.role.data#Extracts Soldiers role from data entered in form.
-        section_id = form.section_id.data#Extracts Soldiers Section id from data entered in form.
+        id = form.id.data  # Extracts id number from data entered in form
+        # Extracts Soldiers name from data entered in form.
+        name = form.name.data
+        # Extracts Soldiers role from data entered in form.
+        role = form.role.data
+        # Extracts Soldiers Section id from data entered in form.
+        section_id = form.section_id.data
 
-        new_sol=Soldier(id,name,role,section_id)#Creates new soldier using data entered in form.
-        new_sol.identity_check = "Unverified"#Sets initial for Identity verification.
-        new_sol.last_update_time = datetime.datetime.now().strftime("%X")#Sets initial for time using time extracted from computer clock.
-        new_sol.ammunition_expended = 0#Sets initial value for ammunition fired by soldier to 0.
-        new_sol.last_heart_rate = 0#Sets initial value for heart rate to 0.
-        new_sol.current_location = "0"#Sets initial value for location TO 0.
-        new_sol.rifle_sensor_battery_level = "100"#Sets initial value for rifle battery to 100.
-        new_sol.status = "OK"#Sets initial value for State to "OK".
-        new_sol.armour_sensor_battery_level = "100"#Sets initial value for Armour battery to 100.
-        new_sol.distance_traveled ="0"#Sets initial values for Distance traveled to 0.
-        new_sol.hub_sensor_battery_level="100"#Sets initial value for HubBattery to 100.
-        db.session.add(new_sol)#adds soldier to database.
-        db.session.commit()#Saves change to database.
+        # Creates new soldier using data entered in form.
+        new_sol = Soldier(id, name, role, section_id)
+        # Sets initial for Identity verification.
+        new_sol.identity_check = "Unverified"
+        # Sets initial for time using time extracted from computer clock.
+        new_sol.last_update_time = datetime.datetime.now().strftime("%X")
+        # Sets initial value for ammunition fired by soldier to 0.
+        new_sol.ammunition_expended = 0
+        new_sol.last_heart_rate = 0  # Sets initial value for heart rate to 0.
+        new_sol.current_location = "0"  # Sets initial value for location TO 0.
+        # Sets initial value for rifle battery to 100.
+        new_sol.rifle_sensor_battery_level = "100"
+        new_sol.status = "OK"  # Sets initial value for State to "OK".
+        # Sets initial value for Armour battery to 100.
+        new_sol.armour_sensor_battery_level = "100"
+        # Sets initial values for Distance traveled to 0.
+        new_sol.distance_traveled = "0"
+        # Sets initial value for HubBattery to 100.
+        new_sol.hub_sensor_battery_level = "100"
+        db.session.add(new_sol)  # adds soldier to database.
+        db.session.commit()  # Saves change to database.
 
-        update_section = Section.query.get(section_id)#Queries Section table using section id of soldier.
-        update_section.section_strength = update_section.section_strength + 1#Adds one to section Strength for new person added to section.
-        update_section.section_ok = update_section.section_ok + 1#Adds one person to SectionOK for new person added to section.
-        db.session.add(update_section)#Adds updated information to database.
-        db.session.commit()#Saves change to database.
+        # Queries Section table using section id of soldier.
+        update_section = Section.query.get(section_id)
+        # Adds one to section Strength for new person added to section.
+        update_section.section_strength = update_section.section_strength + 1
+        # Adds one person to SectionOK for new person added to section.
+        update_section.section_ok = update_section.section_ok + 1
+        db.session.add(update_section)  # Adds updated information to database.
+        db.session.commit()  # Saves change to database.
+
+        # Redirects to html page that displays List of section members.
+        return redirect(url_for('list_section_members'))
+
+    # returns html page for form to add member to section.
+    return render_template('add-soldier.html', form=form)
 
 
-        return redirect(url_for('list_section_members'))#Redirects to html page that displays List of section members.
-
-
-    return render_template('add-soldier.html',form=form)#returns html page for form to add member to section.
-
-@app.route('/list-heart-rate/<id>')#display  list of soldiers heart rate to user
+# display  list of soldiers heart rate to user
+@app.route('/list-heart-rate/<id>')
 def list_heart_rate(id):
     """
     Flask Route: '/list-heart-rate/<id>'
@@ -449,13 +520,17 @@ def list_heart_rate(id):
     - render_template: HTML page ('list-heart-rate.html') that displays the list of heart rate entries for the selected soldier.
     """
 
-    Heart = Vitals.query.filter_by(soldier_id = id ).all()#Queries all Entries in vitals table with soldier_id entered by user.
-    person = Soldier.query.get_or_404(id)#Queries soldier using id number entered by user. Returns 404 message is entered id number does not exist in database.
+    # Queries all Entries in vitals table with soldier_id entered by user.
+    Heart = Vitals.query.filter_by(soldier_id=id).all()
+    # Queries soldier using id number entered by user. Returns 404 message is entered id number does not exist in database.
+    person = Soldier.query.get_or_404(id)
+
+    # Returns html page that lists vitals entries of selected soldier.
+    return render_template('list-heart-rate.html', Heart=Heart, person=person)
 
 
-    return render_template('list-heart-rate.html', Heart = Heart, person = person)#Returns html page that lists vitals entries of selected soldier.
-
-@app.route('/view-heart',methods = ['POST','GET'])#select which section members heart rate to view
+# select which section members heart rate to view
+@app.route('/view-heart', methods=['POST', 'GET'])
 def view_heart():
     """
     Flask Route: '/view-heart'
@@ -469,15 +544,20 @@ def view_heart():
     - redirect or render_template: If the form is validated, redirects to the 'list-heart-rate' page. Otherwise, renders 'view-heart.html'
       with the soldier selection form.
     """
-    form =HeartForm()#adds form to be used in function.
+    form = HeartForm()  # adds form to be used in function.
 
-    if form.validate_on_submit():#if the form is validated when the submit button is pressed.
-        id = form.id.data#Extracts id number from data entered in form
+    # if the form is validated when the submit button is pressed.
+    if form.validate_on_submit():
+        id = form.id.data  # Extracts id number from data entered in form
 
-        return redirect(url_for('list_heart_rate', id = id))#Redirects to html page to display vitals table entries for entered id number.
-    return render_template('view-heart.html',form=form)#Displays html page that for form to select soldier to view their vitals table entries.
+        # Redirects to html page to display vitals table entries for entered id number.
+        return redirect(url_for('list_heart_rate', id=id))
+    # Displays html page that for form to select soldier to view their vitals table entries.
+    return render_template('view-heart.html', form=form)
 
-@app.route('/list-location/<id>')#Select soldier to view  locations soldier has been
+
+# Select soldier to view  locations soldier has been
+@app.route('/list-location/<id>')
 def list_location(id):
     """
     Flask Route: '/list-location/<id>'
@@ -494,11 +574,16 @@ def list_location(id):
     - render_template: HTML page to display a list of all locations the soldier has been, along with relevant information about the soldier.
     """
 
-    Location = Location.query.filter_by(soldier_id = id ).all()#Queries all Entries in location table with soldier_id entered by user.
-    person = Soldier.query.get_or_404(id)#Queries soldier using id number entered by user. Returns 404 message is entered id number does not exist in database.
-    return render_template('list-location.html', Location = Location, person = person)#returns html page to display list of all locations soldier has been.
+    # Queries all Entries in location table with soldier_id entered by user.
+    location = Location.query.filter_by(soldier_id=id).all()
+    # Queries soldier using id number entered by user. Returns 404 message is entered id number does not exist in database.
+    soldier = Soldier.query.get_or_404(id)
+    # returns html page to display list of all locations soldier has been.
+    return render_template('list-location.html', Location=location, person=soldier)
 
-@app.route('/view-location',methods = ['POST','GET'])#displays locations soldier has been
+
+# displays locations soldier has been
+@app.route('/view-location', methods=['POST', 'GET'])
 def view_location():
     """
     Flask Route: '/view-location'
@@ -512,17 +597,19 @@ def view_location():
     - render_template: HTML page containing the form to select a soldier to view their locations.
     - redirect: If the form is validated, redirects to the 'list-location' route to display the locations of the selected soldier.
     """
-    form =LocationForm()#adds form to be used in function.
+    form = LocationForm()  # adds form to be used in function.
 
-    if form.validate_on_submit():#if the form is validated when the submit button is pressed.
-        id = form.id.data#Extracts id number from data entered in form
+    # if the form is validated when the submit button is pressed.
+    if form.validate_on_submit():
+        id = form.id.data  # Extracts id number from data entered in form
 
-        return redirect(url_for('list_location', id = id))#Redirects to webpage to display list of soldiers locations.
-    return render_template('view-location.html',form=form)#Returns html for form to select soldier.
+        # Redirects to webpage to display list of soldiers locations.
+        return redirect(url_for('list_location', id=id))
+    # Returns html for form to select soldier.
+    return render_template('view-location.html', form=form)
 
 
-
-@app.route('/list-section-members')#list all members in section
+@app.route('/list-section-members')  # list all members in section
 def list_section_members():
     """
     Flask Route: '/list-section-members'
@@ -534,10 +621,12 @@ def list_section_members():
     - render_template: HTML page for displaying the list of soldiers in the section.
     """
 
-    return render_template('list-section-members.html')#Returns html page that that displays soldiers in section.
+    # Returns html page that that displays soldiers in section.
+    return render_template('list-section-members.html')
 
 
-@app.route('/section', methods = ['GET'])#sends section information to a page in json script format.
+# sends section information to a page in json script format.
+@app.route('/section', methods=['GET'])
 def section_json_information():
     """
     Flask Route: '/section'
@@ -550,19 +639,22 @@ def section_json_information():
     - str: JSON script containing section information, formatted as a list of dictionaries.
     """
 
-    section = Section.query.all()#Queries all section information.
+    section = Section.query.all()  # Queries all section information.
 
-    sections = []#blank list to store json information.
-    for i in section:#For loop to iterate through Queried data and store it in a list printed in json format.
-            soldier = {"id": i.id,"SectionAmmo":i.section_amunition,"SectionStrength":i.section_strength,"SectionLocation":i.section_location,
-                        "SectionOK":i.section_ok,"SectionCasualty":i.section_casualty,"SectionBattery":i.section_battery}#Queried information printed as json.
-            sections.append(soldier)#information appended to list.
+    sections = []  # blank list to store json information.
+    # For loop to iterate through Queried data and store it in a list printed in json format.
+    for i in section:
+        soldier = {"id": i.id, "SectionAmmo": i.section_amunition, "SectionStrength": i.section_strength, "SectionLocation": i.section_location,
+                   "SectionOK": i.section_ok, "SectionCasualty": i.section_casualty, "SectionBattery": i.section_battery}  # Queried information printed as json.
+        sections.append(soldier)  # information appended to list.
 
-    #print(json.dumps(sections))
-    return json.dumps(sections)#list converted to json and printed to page'/section'
+    # print(json.dumps(sections))
+    # list converted to json and printed to page'/section'
+    return json.dumps(sections)
 
 
-@app.route('/soldiers', methods = ['GET'])#sends section information to a page in json script format.
+# sends section information to a page in json script format.
+@app.route('/soldiers', methods=['GET'])
 def soldier_json_information():
     """
     Flask Route: '/soldiers'
@@ -575,21 +667,23 @@ def soldier_json_information():
     - str: JSON script containing soldier information, formatted as a list of dictionaries.
     """
 
-    section = Soldier.query.all()#Queries all Soldier information.
+    section = Soldier.query.all()  # Queries all Soldier information.
 
-    sections = []#blank list to store json information.
-    for i in section:#For loop to iterate through Queried data and store it in a list printed in json format.
-            soldier = {"id": i.id,"name":i.name,"role": i.role,"Ident":i.identity_check,"LastHR":i.last_heart_rate,"currentLocation":i.current_location,
-                        "Distance":i.distance_traveled,"TIME":i.last_update_time,"Rndsfired":i.ammunition_expended,"RifleBat":i.rifle_sensor_battery_level,"State":i.status,
-                        "ArmourBat":i.armour_sensor_battery_level, "HubBattery":i.hub_sensor_battery_level}#Queried information printed as json.
-            sections.append(soldier)#information appended to list.
+    sections = []  # blank list to store json information.
+    # For loop to iterate through Queried data and store it in a list printed in json format.
+    for i in section:
+        soldier = {"id": i.id, "name": i.name, "role": i.role, "Ident": i.identity_check, "LastHR": i.last_heart_rate, "currentLocation": i.current_location,
+                   "Distance": i.distance_traveled, "TIME": i.last_update_time, "Rndsfired": i.ammunition_expended, "RifleBat": i.rifle_sensor_battery_level, "State": i.status,
+                   "ArmourBat": i.armour_sensor_battery_level, "HubBattery": i.hub_sensor_battery_level}  # Queried information printed as json.
+        sections.append(soldier)  # information appended to list.
 
-    #print(json.dumps(sections))
-    return json.dumps(sections)#list converted to json and printed to page'/section'
+    # print(json.dumps(sections))
+    # list converted to json and printed to page'/section'
+    return json.dumps(sections)
 
 
-
-@app.route('/delete-soldier',methods = ['POST','GET'])#remove soldier from section
+# remove soldier from section
+@app.route('/delete-soldier', methods=['POST', 'GET'])
 def delete_soldier():
     """
     Flask Route: '/delete-soldier'
@@ -605,25 +699,33 @@ def delete_soldier():
     HTML Template:
     - 'delete-soldier.html': Returns HTML page for the form to delete a section member if the form is not validated.
     """
-    form =DelForm()#adds form to be used in function.
+    form = DelForm()  # adds form to be used in function.
 
-    if form.validate_on_submit():#if the form is validated when the submit button is pressed.
-        id = form.id.data#Extracts id number from data entered in form
-        soldier = Soldier.query.get_or_404(id)#Queries Soldiers table using entered id returns 404 message id query does not exist.
-        db.session.delete(soldier)#Deletes entry from database.
-        db.session.commit()#Saves change to database.
+    # if the form is validated when the submit button is pressed.
+    if form.validate_on_submit():
+        id = form.id.data  # Extracts id number from data entered in form
+        # Queries Soldiers table using entered id returns 404 message id query does not exist.
+        soldier = Soldier.query.get_or_404(id)
+        db.session.delete(soldier)  # Deletes entry from database.
+        db.session.commit()  # Saves change to database.
 
-        update_section = Section.query.get(soldier.section_id)#Queries Section table using section id of soldier.
-        update_section.section_strength -= 1#Takes one from section Strength for person removed from section.
-        update_section.section_ok -= 1#Takes one from section Ok for person removed from section..
-        db.session.add(update_section)#Adds updated information to database.
-        db.session.commit()#Saves change to database.
+        # Queries Section table using section id of soldier.
+        update_section = Section.query.get(soldier.section_id)
+        # Takes one from section Strength for person removed from section.
+        update_section.section_strength -= 1
+        # Takes one from section Ok for person removed from section..
+        update_section.section_ok -= 1
+        db.session.add(update_section)  # Adds updated information to database.
+        db.session.commit()  # Saves change to database.
 
-        return redirect(url_for('list'))#Redirects to page to display section information.
-    return render_template('delete-soldier.html',form=form)#Returns html page for form to delete section member.
+        # Redirects to page to display section information.
+        return redirect(url_for('list'))
+    # Returns html page for form to delete section member.
+    return render_template('delete-soldier.html', form=form)
 
 
-@app.route('/sensor-data/<message>')#takes information sent by arduino and updated  database
+# takes information sent by arduino and updated  database
+@app.route('/sensor-data/<message>')
 def sensor_data(message):
     """
     Flask Route: '/sensor-data/<message>'
@@ -654,120 +756,153 @@ def sensor_data(message):
       would update the database for the soldier with ID 123456 based on the provided data.
     """
 
-    message_dict = convert_to_dict(message)#calls function to convert data sent from arduino to dictionary.
+    # calls function to convert data sent from arduino to dictionary.
+    message_dict = convert_to_dict(message)
 
-    Update = Soldier.query.get(message_dict['id'])#Queries database for using id number stored in dictionary.
+    # Queries database for using id number stored in dictionary.
+    update_db = Soldier.query.get(message_dict['id'])
 
-    Update.TIME = datetime.datetime.now().strftime("%X")#Updates time of last entry using computer clock.
-    db.session.add(Update)#Stores update to database.
-    db.session.commit()#Saves change to database.
+    # Updates time of last entry using computer clock.
+    update_db.last_update_time = datetime.datetime.now().strftime("%X")
+    db.session.add(update_db)  # Stores update to database.
+    db.session.commit()  # Saves change to database.
 
-    if 'Ident'in message_dict:#Checks dict for Identity check.
-        if message_dict['Ident'] == "1":#if arduino sends 1 identity is verified.
-            Update.Ident = "Verified"#Updates identity as verified.
-            db.session.add(Update)#Stores update to database.
-            db.session.commit()#Saves change to database.
+    if 'Ident' in message_dict:  # Checks dict for Identity check.
+        # if arduino sends 1 identity is verified.
+        if message_dict['Ident'] == "1":
+            # Updates identity as verified.
+            update_db.identity_check = "Verified"
+            db.session.add(update_db)  # Stores update to database.
+            db.session.commit()  # Saves change to database.
         else:
-            Update.Ident = "Unverified"#Updates identity as unverified.
-            db.session.add(Update)#Stores update to database.
-            db.session.commit()#Saves change to database.
+            # Updates identity as unverified.
+            update_db.identity_check = "Unverified"
+            db.session.add(update_db)  # Stores update to database.
+            db.session.commit()  # Saves change to database.
 
-    if 'HR'in message_dict:#Checks dict for heart rate
-        Update.LastHR = message_dict['HR']#Updates database using information in dictionary
-        db.session.add(Update)#Stores update to database.
-        db.session.commit()#Saves change to database.
+    if 'HR' in message_dict:  # Checks dict for heart rate
+        # Updates database using information in dictionary
+        update_db.last_heart_rate = message_dict['HR']
+        db.session.add(update_db)  # Stores update to database.
+        db.session.commit()  # Saves change to database.
 
-        #Creates new entry in vitals table using data received from arduino and time from computer clock.
-        newVital = Vitals(message_dict['HR'],datetime.datetime.now().strftime("%X"),message_dict['id'])
-        db.session.add(newVital)#Stores update to database.
-        db.session.commit()#Saves change to database.
+        # Creates new entry in vitals table using data received from arduino and time from computer clock.
+        new_vital = Vitals(message_dict['HR'], datetime.datetime.now().strftime(
+            "%X"), message_dict['id'])
+        db.session.add(new_vital)  # Stores update to database.
+        db.session.commit()  # Saves change to database.
 
-    if 'long' and 'lat' in message_dict:#Checks dict for latitude and longitude.
-        Update.currentLocation = lat_long_to_grid_reference(float(message_dict['lat']),float(message_dict['long']))#converts lat and long to grid reference.
-        db.session.add(Update)#Stores update to database.
-        db.session.commit()#Saves change to database.
+    # Checks dict for latitude and longitude.
+    if 'long' in message_dict and 'lat' in message_dict:
+        update_db.current_location = lat_long_to_grid_reference(float(message_dict['lat']), float(
+            message_dict['long']))  # converts lat and long to grid reference.
+        db.session.add(update_db)  # Stores update to database.
+        db.session.commit()  # Saves change to database.
 
-        #Creates new entry in location table using data received from arduino and time from computer clock.
-        new_location = Location(message_dict['long'],message_dict['lat'],lat_long_to_grid_reference(float(message_dict['lat']),float(message_dict['long'])),datetime.datetime.now().strftime("%X"),message_dict['id'])
-        db.session.add(new_location)#Stores update to database.
-        db.session.commit()#Saves change to database.
+        # Creates new entry in location table using data received from arduino and time from computer clock.
+        new_location = Location(message_dict['long'], message_dict['lat'], lat_long_to_grid_reference(float(
+            message_dict['lat']), float(message_dict['long'])), datetime.datetime.now().strftime("%X"), message_dict['id'])
+        db.session.add(new_location)  # Stores update to database.
+        db.session.commit()  # Saves change to database.
 
-        if Update.role == "I/C":#If the role of the soldier is the section I/C then their location is used for section location.
-            updateSection = Section.query.get(Update.section_id)#queries Section table using Section ID of soldier.
-            updateSection.SectionLocation = Update.currentLocation#Sets section location to Section commanders current location.
-            db.session.add(updateSection)#Stores update to database.
-            db.session.commit()#Saves change to database.
+        # If the role of the soldier is the section I/C then their location is used for section location.
+        if update_db.role == "I/C":
+            # queries Section table using Section ID of soldier.
+            update_section = Section.query.get(update_db.section_id)
+            # Sets section location to Section commanders current location.
+            update_section.section_location = update_db.current_location
+            db.session.add(update_section)  # Stores update to database.
+            db.session.commit()  # Saves change to database.
 
-        Traveled = Location.query.filter_by(soldier_id =message_dict['id']).all()#Queries table of locations using Id number of soldier and returns all entries.
-        if len(Traveled)>1:#If there is more that one entry for location gets the distance between those locations.
-            dist = 0#Stores distance traveled.
-            i = 0#used to increment through array in while loop.
-            while i < len(Traveled):#increments through list of locations getting the distance between two points at each increment.
-                if i == (len(Traveled)-1):#breaks from loop on second last entry otherwise an error is caused.
+        # Queries table of locations using Id number of soldier and returns all entries.
+        Traveled = Location.query.filter_by(
+            soldier_id=message_dict['id']).all()
+        # If there is more that one entry for location gets the distance between those locations.
+        if len(Traveled) > 1:
+            dist = 0  # Stores distance traveled.
+            i = 0  # used to increment through array in while loop.
+            # increments through list of locations getting the distance between two points at each increment.
+            while i < len(Traveled):
+                # breaks from loop on second last entry otherwise an error is caused.
+                if i == (len(Traveled)-1):
                     break
-                else:#adds distance between the two points currently being calculated and adds them to total distance.
-                    #Function distance.distance() taken from package geopy. Takes two latitude longitude points as an argument,
-                    #returns the distance between those two points, the .m at the end of the function has selected the returned value to be in meters.
-                    dist = dist + distance.distance([float(Traveled[i].lat),float(Traveled[i].long)],[float(Traveled[i+1].lat),float(Traveled[i+1].long)]).m
-                i = i + 1#used to increment through list.
-            if dist > 1000:#if the distance in meters is greater than 1000 converts to Km
-                            #round() function used to keep answer to 3 decimal places.
-                dist = str(round(dist/1000.0,3)) + "Km"
+                else:  # adds distance between the two points currently being calculated and adds them to total distance.
+                    # Function distance.distance() taken from package geopy. Takes two latitude longitude points as an argument,
+                    # returns the distance between those two points, the .m at the end of the function has selected the returned value to be in meters.
+                    dist = dist + distance.distance([float(Traveled[i].lat), float(Traveled[i].long)], [
+                                                    float(Traveled[i+1].lat), float(Traveled[i+1].long)]).m
+                i = i + 1  # used to increment through list.
+            if dist > 1000:  # if the distance in meters is greater than 1000 converts to Km
+                # round() function used to keep answer to 3 decimal places.
+                dist = str(round(dist/1000.0, 3)) + "Km"
             else:
-                dist = str(round(dist,3)) + "m"
+                dist = str(round(dist, 3)) + "m"
 
-            updateDistance = Soldier.query.get(message_dict['id'])#Queries database using soldiers Id
-            updateDistance.Distance = dist #updates distance traveled.
-            db.session.add(updateDistance)#Stors update to database.
-            db.session.commit()#Saves change to database.
+            # Queries database using soldiers Id
+            updateDistance = Soldier.query.get(message_dict['id'])
+            # updates distance traveled.
+            updateDistance.distance_traveled = dist
+            db.session.add(updateDistance)  # Stors update to database.
+            db.session.commit()  # Saves change to database.
 
-        #This was used when I would get the time of an update from the GPS RTC.
-    if 'TIME'in message_dict:#Checks dict for TIME
-        Update.TIME = message_dict['TIME']#Updates database using information in dictionary
-        db.session.add(Update)#Stores update to database.
-        db.session.commit()#Saves change to database.
+        # This was used when I would get the time of an update from the GPS RTC.
+    if 'TIME' in message_dict:  # Checks dict for TIME
+        # Updates database using information in dictionary
+        update_db.last_update_time = message_dict['TIME']
+        db.session.add(update_db)  # Stores update to database.
+        db.session.commit()  # Saves change to database.
 
-    if 'Rndsfired'in message_dict:#Checks dict for ammunition fired
-        Update.Rndsfired = Update.Rndsfired + message_dict['Rndsfired']#Updates database using information in dictionary
-        db.session.add(Update)#Stores update to database.
-        db.session.commit()#Saves change to database.
+    if 'Rndsfired' in message_dict:  # Checks dict for ammunition fired
+        update_db.ammunition_expended = update_db.ammunition_expended + \
+            message_dict['Rndsfired']  # Updates database using information in dictionary
+        db.session.add(update_db)  # Stores update to database.
+        db.session.commit()  # Saves change to database.
 
-        update_section_ammo = Section.query.get(Update.section_id)#Queries Section table using section id of soldier.
-        #updates total of ammunition left in the section base on rounds fired by th soldier.
-        update_section_ammo.SectionAmmo = update_section_ammo.SectionAmmo - message_dict['Rndsfired']
-        db.session.add(update_section_ammo)#Stores update to database.
-        db.session.commit()#Saves change to database.
+        # Queries Section table using section id of soldier.
+        update_section_ammo = Section.query.get(update_db.section_id)
+        # updates total of ammunition left in the section base on rounds fired by th soldier.
+        update_section_ammo.section_amunition = update_section_ammo.section_amunition - \
+            message_dict['Rndsfired']
+        db.session.add(update_section_ammo)  # Stores update to database.
+        db.session.commit()  # Saves change to database.
 
-    if 'RifleBat'in message_dict:#Checks dict for Rifle battery information.
-        Update.RifleBat = message_dict['RifleBat']#Updates database using information in dictionary
-        db.session.add(Update)#Stores update to database.
-        db.session.commit()#Saves change to database.
+    if 'RifleBat' in message_dict:  # Checks dict for Rifle battery information.
+        # Updates database using information in dictionary
+        update_db.rifle_sensor_battery_level = message_dict['RifleBat']
+        db.session.add(update_db)  # Stores update to database.
+        db.session.commit()  # Saves change to database.
 
-    if 'State'in message_dict:#Checks dict for if body armour sensor was triggered.
-        if message_dict['State'] == "1":#If 'State' is set to '1' sensor has been triggered.
-            Update.State = "Casualty"#changes value in 'State' to 'Casualty'.
-            db.session.add(Update)#Stores update to database.
-            db.session.commit()#Saves change to database.
+    if 'State' in message_dict:  # Checks dict for if body armour sensor was triggered.
+        # If 'State' is set to '1' sensor has been triggered.
+        if message_dict['State'] == "1":
+            # changes value in 'State' to 'Casualty'.
+            update_db.status = "Casualty"
+            db.session.add(update_db)  # Stores update to database.
+            db.session.commit()  # Saves change to database.
 
-            SectionCas = Section.query.get(Update.section_id)#Queries Section table using section id of soldier.
-            SectionCas.SectionCasualty = SectionCas.SectionCasualty + 1#Adds 1 to Casualty in section table.
-            SectionCas.SectionOK = SectionCas.SectionOK - 1#Removes 1 from section ok.
-            db.session.add(SectionCas)#Stores update to database.
-            db.session.commit()#Saves change to database.
+            # Queries Section table using section id of soldier.
+            SectionCas = Section.query.get(update_db.section_id)
+            # Adds 1 to Casualty in section table.
+            SectionCas.section_casualty = SectionCas.section_casualty + 1
+            # Removes 1 from section ok.
+            SectionCas.section_ok = SectionCas.section_ok - 1
+            db.session.add(SectionCas)  # Stores update to database.
+            db.session.commit()  # Saves change to database.
 
         else:
-            Update.State = "OK"#State is OK
-            db.session.add(Update)#Stores update to database.
-            db.session.commit()#Saves change to database.
+            update_db.status = "OK"  # State is OK
+            db.session.add(update_db)  # Stores update to database.
+            db.session.commit()  # Saves change to database.
 
-    if 'ArmourBat'in message_dict:#Checks dict for Body armour battery level.
-        Update.ArmourBat = message_dict['ArmourBat']#Updates database using information in dictionary
-        db.session.add(Update)#Stores update to database.
-        db.session.commit()#Saves change to database.
+    if 'ArmourBat' in message_dict:  # Checks dict for Body armour battery level.
+        # Updates database using information in dictionary
+        update_db.armour_sensor_battery_level = message_dict['ArmourBat']
+        db.session.add(update_db)  # Stores update to database.
+        db.session.commit()  # Saves change to database.
 
-    return "ok" #message returned to arduino by server.
+    return "ok"  # message returned to arduino by server.
 
 
-if __name__=='__main__':#if python is run as main file.
-    app.run(debug=True)#turns on debugger used while testing code on laptop.
-    #app.run(host = '0.0.0.0',port = '5000')#Allows access to server when set to'0.0.0.0' uncomment to when running on raspberry pi.
+if __name__ == '__main__':  # if python is run as main file.
+    app.run(debug=True)  # turns on debugger used while testing code on laptop.
+    # app.run(host = '0.0.0.0',port = '5000')#Allows access to server when set to'0.0.0.0' uncomment to when running on raspberry pi.
