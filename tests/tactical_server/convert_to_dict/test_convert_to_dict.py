@@ -1,15 +1,34 @@
 from tactical_server.convert_to_dict.convert_to_dict import convert_to_dict
 import pytest
-from unittest.mock import patch, MagicMock 
 
 TEST_DATA = [
     (
-        "ID:862097,lat:52.65913,long:-8.62513",
-        ({'ID': '862097', 'lat': '52.65913', 'long': '-8.62513'})
+        "id:1,Ident:1",
+        ({'id': 1, 'Ident': "1"})
+    ),
+    (
+        "id:1,HR:67",
+        ({'id': 1, 'HR': 67})
     ),
     (
         "id:862097,lat:52.65913,long:-8.62513",
         ({'id': 862097, 'lat': '52.65913', 'long': '-8.62513'})
+    ),
+    (
+        "id:1,Rndsfired:5,RifleBat:98",
+        ({'id': 1, 'Rndsfired': 5, 'RifleBat': '98'})
+    ),
+    (
+        "id:1,State:1,ArmourBat:80",
+        ({'id': 1, 'State': '1', 'ArmourBat': '80'})
+    ),
+    (
+        "id:1,State:0,ArmourBat:60",
+        ({'id': 1, 'State': '0', 'ArmourBat': '60'})
+    ),
+    (
+        "id:1,lat:52.66206,long:-8.20898",
+        ({'id': 1, 'lat': "52.66206", 'long': '-8.20898'})
     )
 ]
 
