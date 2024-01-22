@@ -719,7 +719,7 @@ def delete_soldier():
         db.session.commit()  # Saves change to database.
 
         # Redirects to page to display section information.
-        return redirect(url_for('list'))
+        return redirect(url_for('list_section_members'))
     # Returns html page for form to delete section member.
     return render_template('delete-soldier.html', form=form)
 
