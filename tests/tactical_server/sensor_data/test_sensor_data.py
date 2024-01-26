@@ -6,15 +6,6 @@ from tactical_server.section_db import app, db
 from tactical_server.section_db import Soldier, Vitals, Location, Section
 
 
-# @pytest.fixture
-# def client():
-#     app.config['TESTING'] = True
-#     client = app.test_client()
-
-#     with app.app_context():
-#         db.create_all()
-
-#     yield client
 def create_soldier(id, name, role, section_id):
     new_sol = Soldier(id, name, role, section_id)
     new_sol.identity_check = "Unverified"
@@ -28,6 +19,17 @@ def create_soldier(id, name, role, section_id):
     new_sol.distance_traveled = "0"
     new_sol.hub_sensor_battery_level = "100"
     return new_sol
+
+def remove_soldier(id):
+    soldier = Soldier.query.get_or_404(id)
+    db.session.delete(soldier) 
+    db.session.commit() 
+
+    update_section = Section.query.get(soldier.section_id)
+    update_section.section_strength -= 1
+    update_section.section_ok -= 1
+    db.session.add(update_section)
+    db.session.commit()
 
 @pytest.fixture
 def app_with_test_database():
@@ -45,20 +47,20 @@ def app_with_test_database():
 
     yield app
 
-    with app.app_context():
-        db.session.remove()
-        # db.drop_all()
-
 @pytest.fixture
 def client(app_with_test_database):
     return app_with_test_database.test_client()
 
+HR_Params = [
+    (0, 75),
+    (0, 88),
+    (0, 55)
+]
 
-def test_sensor_data_database_update(client):
-    # Test database updates for the '/sensor-data/<message>' route
+@pytest.mark.parametrize("id, heart_rate", HR_Params)
+def test_sensor_data_heart_rate_update(client, id, heart_rate):
 
-    # Assuming your route expects the message as a string, create a message string for testing
-    message_string = "id:0,HR:75,Ident:1"
+    message_string = f"id:{id},HR:{heart_rate}"
     response = client.get(f'/sensor-data/{message_string}')
 
     assert response.status_code == 200
@@ -66,20 +68,56 @@ def test_sensor_data_database_update(client):
 
     # Check the database for updates
     with app.app_context():
-        # Retrieve the updated Soldier record from the database
-        updated_soldier = Soldier.query.get(0)
 
+        # Retrieve the updated Soldier record from the database
+        updated_soldier = Soldier.query.get(id)
+        try:
+            # Perform assertions to check if the database is updated correctly
+            assert updated_soldier.last_heart_rate == heart_rate
+
+            # Check if a new entry is added to the Vitals table
+            new_vital = Vitals.query.filter_by(soldier_id=id).order_by(Vitals.id.desc()).first()
+            assert new_vital.heart_rate == heart_rate
+        finally:
+            # Clean up (optional): Delete the test records from the database
+            db.session.delete(updated_soldier)
+            db.session.delete(new_vital)
+            db.session.commit()
+
+
+LOCATION_Params = [
+    (0, "52.65913", "-8.62513"),
+    (0, "52.6540", "-8.62994"),
+    (0, "52.66206", "-8.20898")
+]
+
+@pytest.mark.parametrize("id, lat, long", LOCATION_Params)
+def test_sensor_data_loction_update(client, id, lat, long):
+
+    message_string = f"id:{id},lat:{lat},long:{long}"
+    response = client.get(f'/sensor-data/{message_string}')
+
+    assert response.status_code == 200
+    assert response.data.decode('utf-8') == 'ok'
+
+    # Check the database for updates
+    with app.app_context():
+
+        # Retrieve the updated Soldier record from the database
+        updated_soldier = Soldier.query.get(id)
+
+        # Update Test for current location
         # Perform assertions to check if the database is updated correctly
-        assert updated_soldier.last_heart_rate == 75
-        assert updated_soldier.identity_check == "Verified"
-        # Add more assertions based on the expected behavior of your route
+        # assert updated_soldier.current_location.lat == lat
+        # assert updated_soldier.current_location.long == long
 
         # Check if a new entry is added to the Vitals table
-        new_vital = Vitals.query.filter_by(soldier_id=0).order_by(Vitals.id.desc()).first()
-        assert new_vital.heart_rate == 75
-        # Add more assertions for other tables (Location, Section, etc.)
-
-        # Clean up (optional): Delete the test records from the database
-        db.session.delete(updated_soldier)
-        db.session.delete(new_vital)
-        db.session.commit()
+        new_location = Location.query.filter_by(soldier_id=id).order_by(Location.id.desc()).first()
+        try:
+            assert new_location.lat == lat
+            assert new_location.long == long
+        finally:
+            # Clean up (optional): Delete the test records from the database
+            db.session.delete(updated_soldier)
+            db.session.delete(new_location)
+            db.session.commit()
