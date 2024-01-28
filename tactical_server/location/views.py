@@ -2,8 +2,6 @@
 from flask import redirect, render_template, url_for, Blueprints, request
 
 from forms_section.forms_section import LocationForm
-
-from tactical_server.database import db
 from tactical_server.models import Soldier, Location
 
 location_blueprint = Blueprints('location', __name__, template_folder='templates/location')
