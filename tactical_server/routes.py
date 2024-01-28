@@ -15,23 +15,23 @@ from lat_long_to_grid_reference.lat_long_to_grid_reference import \
     lat_long_to_grid_reference  # converts lat and long to grid reference.
 
 
-from .extensions import db
+from .database import db
 from .models import Soldier, Vitals, Location, Section
 
-main = Blueprint("main", __name__)
+main = Blueprint("main", __name__, template_folder='templates')
 
-@main.route('/')  # flask app displays home page
-def index():
-    """
-    Flask Route: '/'
+# @main.route('/')  # flask app displays home page
+# def index():
+#     """
+#     Flask Route: '/'
 
-    Function to handle requests to the home page ('/'). This function is called when the root URL is accessed
-    by the Flask app. It renders the 'home.html' template and returns the HTML page to be displayed to the user.
+#     Function to handle requests to the home page ('/'). This function is called when the root URL is accessed
+#     by the Flask app. It renders the 'home.html' template and returns the HTML page to be displayed to the user.
 
-    Returns:
-    - str: Rendered HTML page ('index.html').
-    """
-    return render_template('    qAwindex.html')  # Returns 'home.html' to be displayed to user.
+#     Returns:
+#     - str: Rendered HTML page ('index.html').
+#     """
+#     return render_template('    qAwindex.html')  # Returns 'home.html' to be displayed to user.
 
 
 # function to add a section
