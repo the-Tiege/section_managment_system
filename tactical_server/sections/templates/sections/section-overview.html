@@ -11,7 +11,7 @@
     $("#section tbody > tr").remove();
 
       //Gets json data from the page "/soldiers" and stores it in an array 'result'
-    $.getJSON("/section",function(result){
+    $.getJSON("/sections/section",function(result){
 
       //increments through each value in array result to allow it to beused to prind data to webpage.
       $.each(result,function(i){

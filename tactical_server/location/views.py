@@ -1,10 +1,10 @@
 
-from flask import redirect, render_template, url_for, Blueprints, request
+from flask import redirect, render_template, url_for, Blueprint, request
 
 from forms_section.forms_section import LocationForm
 from tactical_server.models import Soldier, Location
 
-location_blueprint = Blueprints('location', __name__, template_folder='templates/location')
+location_blueprint = Blueprint('location', __name__, template_folder='templates/location')
 
 @location_blueprint.route('/list-location/<id>')
 def list_location(id):

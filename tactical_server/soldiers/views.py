@@ -67,7 +67,7 @@ def add_soldier():
         db.session.commit()  # Saves change to database.
 
         # Redirects to html page that displays List of section members.
-        return redirect(url_for('list_section_members'))
+        return redirect(url_for('sections.list_section_members'))
 
     # returns html page for form to add member to section.
     return render_template('add-soldier.html', form=form)
@@ -109,6 +109,6 @@ def delete_soldier():
         db.session.commit()  # Saves change to database.
 
         # Redirects to page to display section information.
-        return redirect(url_for('list_section_members'))
+        return redirect(url_for('sections.list_section_members'))
     # Returns html page for form to delete section member.
     return render_template('delete-soldier.html', form=form)
