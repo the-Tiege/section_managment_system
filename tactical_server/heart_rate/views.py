@@ -1,13 +1,12 @@
-import datetime  # gets date and time from computer.
-import json  # used to put data into json format.
-from flask import Flask, jsonify,  redirect, render_template, url_for, Blueprint, request
-from forms_section.forms_section import HeartForm
-    
+from flask import redirect, render_template, url_for, Blueprint, request
+from .forms import HeartForm
+
 from tactical_server.models import Soldier, Vitals
 
-heart_rate_blueprint = Blueprint('heart_rate', __name__, template_folder='templates/heart_rate')
+heart_rate_blueprint = Blueprint(
+    'heart_rate', __name__, template_folder='templates/heart_rate')
 
-# display  list of soldiers heart rate to user
+
 @heart_rate_blueprint.route('/list-heart-rate/<id>')
 def list_heart_rate(id):
     """
@@ -55,6 +54,6 @@ def view_heart():
         id = form.id.data  # Extracts id number from data entered in form
 
         # Redirects to html page to display vitals table entries for entered id number.
-        return redirect(url_for('list_heart_rate', id=id))
+        return redirect(url_for('heart_rate.list_heart_rate', id=id))
     # Displays html page that for form to select soldier to view their vitals table entries.
     return render_template('view-heart.html', form=form)

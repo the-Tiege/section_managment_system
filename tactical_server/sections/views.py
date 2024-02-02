@@ -1,5 +1,5 @@
 from flask import redirect, render_template, url_for, Blueprint
-from forms_section.forms_section import Addammo, CreateSection, DelSection
+from .forms import Addammo, CreateSection, DelSection
 
 import json
 import datetime
@@ -7,10 +7,9 @@ import datetime
 from tactical_server.database import db
 from tactical_server.models import Section, Soldier, Vitals, Location
 
-from convert_to_dict.convert_to_dict import convert_to_dict
+from .convert_to_dict import convert_to_dict
 from geopy import distance
-from lat_long_to_grid_reference.lat_long_to_grid_reference import \
-    lat_long_to_grid_reference
+from .lat_long_to_grid_reference import lat_long_to_grid_reference
 
 section_blueprint = Blueprint(
     'sections', __name__, template_folder='templates/sections')

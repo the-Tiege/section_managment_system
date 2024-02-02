@@ -1,7 +1,7 @@
 
 from flask import redirect, render_template, url_for, Blueprint, request
 
-from forms_section.forms_section import LocationForm
+from .forms import LocationForm
 from tactical_server.models import Soldier, Location
 
 location_blueprint = Blueprint('location', __name__, template_folder='templates/location')
@@ -53,6 +53,6 @@ def view_location():
         id = form.id.data  # Extracts id number from data entered in form
 
         # Redirects to webpage to display list of soldiers locations.
-        return redirect(url_for('list_location', id=id))
+        return redirect(url_for('location.list_location', id=id))
     # Returns html for form to select soldier.
     return render_template('view-location.html', form=form)
