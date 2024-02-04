@@ -1,4 +1,4 @@
-from flask import redirect, render_template, url_for, Blueprint
+from flask import redirect, render_template, url_for, Blueprint, request
 from .forms import Addammo, CreateSection, DelSection
 
 import json
@@ -34,7 +34,8 @@ def add_section():
     form = CreateSection()  # adds CreateSection form to be used in function.
 
     # if the form is validated when the submit button is pressed.
-    if form.validate_on_submit():
+    # if form.validate_on_submit():
+    if request.method == "POST":
 
         id = form.id.data  # Extracts id number from data entered in form.
         # Extracts Ammunition from data entered in form.
