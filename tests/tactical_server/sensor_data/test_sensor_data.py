@@ -1,9 +1,9 @@
 import datetime
-from flask_sqlalchemy import SQLAlchemy
 import pytest
 # Replace "your_app" with the actual name of your application
-from tactical_server.section_db import app, db
-from tactical_server.section_db import Soldier, Vitals, Location, Section
+from tactical_server.database import db
+from tactical_server.models import Soldier, Vitals, Location, Section
+from tactical_server import create_app
 
 
 def create_soldier(id, name, role, section_id):

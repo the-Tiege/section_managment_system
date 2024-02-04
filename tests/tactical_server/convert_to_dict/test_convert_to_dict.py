@@ -1,4 +1,4 @@
-from tactical_server.convert_to_dict.convert_to_dict import convert_to_dict
+from tactical_server.sections.convert_to_dict import convert_to_dict
 import pytest
 
 TEST_DATA = [
