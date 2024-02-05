@@ -1,3 +1,4 @@
+import datetime
 from .database import db
 
 class Section(db.Model):
@@ -54,8 +55,14 @@ class Section(db.Model):
             id (int): Identifying number of the section, must be unique.
             section_ammo (int): Sections starting ammunition.
         """
-        self.id = id  # Identifying number of the section must be unique.
-        self.section_amunition = section_ammo  # Sections starting ammunition.
+        self.id = id
+        self.section_amunition = section_ammo
+        self.section_strength = 0
+        self.section_ok = 0
+        self.section_casualty = 0
+        self.section_location = "0"
+        self.section_battery = "100"
+
 
 
 class Soldier(db.Model):
@@ -138,10 +145,20 @@ class Soldier(db.Model):
             role (str): Soldier's role in the section.
             section_id (int): Section the soldier belongs to.
         """
-        self.id = id  # Army number.
-        self.name = name  # Soldiers name.
-        self.role = role  # Soldiers role in the section.
-        self.section_id = section_id  # Section soldier belongs to.
+        self.id = id
+        self.name = name
+        self.role = role
+        self.section_id = section_id
+        self.identity_check = "Unverified"
+        self.last_update_time = datetime.datetime.now().strftime("%I:%M")
+        self.ammunition_expended = 0
+        self.last_heart_rate = 0
+        self.current_location = "0"
+        self.rifle_sensor_battery_level = "100"
+        self.status = "OK"
+        self.armour_sensor_battery_level = "100"
+        self.distance_traveled = "0"
+        self.hub_sensor_battery_level = "100"
 
 
 class Vitals(db.Model):

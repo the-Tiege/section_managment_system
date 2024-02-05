@@ -1,4 +1,4 @@
-from flask import redirect, render_template, url_for, Blueprint, request
+from flask import redirect, render_template, url_for, Blueprint, request, jsonify
 from .forms import Addammo, CreateSection, DelSection
 
 import json
@@ -43,15 +43,6 @@ def add_section():
 
         # Creates new section member form data entered in form.
         new_sec = Section(id, SectionAmmo)
-        # Sets initial value of section strength to 0.
-        new_sec.section_strength = 0
-        new_sec.section_ok = 0  # Sets initial value of SectionOK to 0.
-        # Sets initial value of Casualties in section to 0.
-        new_sec.section_casualty = 0
-        new_sec.section_location = "0"  # Sets initial value of location to 0.
-        # Sets initial value of Battery to to 100.
-        new_sec.section_battery = "100"
-        # Takes object created from data taken from form and adds it to database.
         db.session.add(new_sec)
         db.session.commit()  # Saves change made to database.
 
@@ -83,7 +74,7 @@ def add_ammo():
     form = Addammo()  # adds form to be used in function.
 
     # if the form is validated when the submit button is pressed.
-    if form.validate_on_submit():
+    if request.method == "POST":
 
         id = form.id.data  # Extracts id number from data entered in form
         # Extracts ammunition from data enter in form.
@@ -141,7 +132,7 @@ def delete_section():
     form = DelSection()  # adds form to be used in function.
 
     # if the form is validated when the submit button is pressed.
-    if form.validate_on_submit():
+    if request.method == "POST":
         id = form.id.data  # Extracts id number from data entered in form
         # When section is deleted. Queries all soldiers with same section id and deletes them.
         soldiers = Soldier.query.filter_by(section_id=id).all()
@@ -193,18 +184,18 @@ def section_json_information():
     - str: JSON script containing section information, formatted as a list of dictionaries.
     """
 
-    section = Section.query.all()  # Queries all section information.
+    sections = Section.query.all()  # Queries all section information.
 
-    sections = []  # blank list to store json information.
+    sections_json = []  # blank list to store json information.
     # For loop to iterate through Queried data and store it in a list printed in json format.
-    for i in section:
-        soldier = {"id": i.id, "SectionAmmo": i.section_amunition, "SectionStrength": i.section_strength, "SectionLocation": i.section_location,
+    for i in sections:
+        section = {"id": i.id, "SectionAmmo": i.section_amunition, "SectionStrength": i.section_strength, "SectionLocation": i.section_location,
                    "SectionOK": i.section_ok, "SectionCasualty": i.section_casualty, "SectionBattery": i.section_battery}  # Queried information printed as json.
-        sections.append(soldier)  # information appended to list.
+        sections_json.append(section)  # information appended to list.
 
     # print(json.dumps(sections))
     # list converted to json and printed to page'/section'
-    return json.dumps(sections)
+    return json.dumps(sections_json)
 
 
 # sends section information to a page in json script format.
@@ -411,4 +402,6 @@ def sensor_data(message):
         db.session.add(update_db)  # Stores update to database.
         db.session.commit()  # Saves change to database.
 
-    return "ok"  # message returned to arduino by server.
+    return ""
+
+    

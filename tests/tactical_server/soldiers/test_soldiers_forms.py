@@ -1,5 +1,4 @@
-from tactical_server.models import Soldier, Section
-from tactical_server.database import db
+from tactical_server.models import Soldier
 
 def test_add_soldier(client, app):
     client.post('/sections/add-section', data={'id': 1, 'SectionAmmo': 5000})
