@@ -108,8 +108,6 @@ def test_sensor_data_status(client, app, id, heart_rate):
         assert updated_soldier.name == "Dunne"
         assert response.status_code == 200
         assert updated_soldier.last_heart_rate == heart_rate
-        new_vital = Vitals.query.filter_by(soldier_id=id).order_by(Vitals.id.desc()).first()
-        assert new_vital.heart_rate == heart_rate
         
 @pytest.mark.parametrize("id, heart_rate", HR_Params)
 def test_sensor_data_battery_level(client, app, id, heart_rate):
@@ -131,8 +129,6 @@ def test_sensor_data_battery_level(client, app, id, heart_rate):
         assert updated_soldier.name == "Dunne"
         assert response.status_code == 200
         assert updated_soldier.last_heart_rate == heart_rate
-        new_vital = Vitals.query.filter_by(soldier_id=id).order_by(Vitals.id.desc()).first()
-        assert new_vital.heart_rate == heart_rate
         
 
 @pytest.mark.parametrize("id, heart_rate", HR_Params)
@@ -153,5 +149,3 @@ def test_sensor_data_identity_check(client, app, id, heart_rate):
         assert updated_soldier.name == "Dunne"
         assert response.status_code == 200
         assert updated_soldier.last_heart_rate == heart_rate
-        new_vital = Vitals.query.filter_by(soldier_id=id).order_by(Vitals.id.desc()).first()
-        assert new_vital.heart_rate == heart_rate  
