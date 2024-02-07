@@ -59,9 +59,99 @@ def test_sensor_data_loction_update(client, app, id, lat, long):
 
     assert response.status_code == 200
 
-    # Check the database for updates
     with app.app_context():
         new_location = Location.query.filter_by(soldier_id=id).order_by(Location.id.desc()).first()
         assert new_location.lat == lat
         assert new_location.long == long
+
+RNDS_FIRED_Params = [
+    (0, 5),
+    (0, 8),
+    (0, 20)
+]
+@pytest.mark.parametrize("id, rounds_fired", RNDS_FIRED_Params)
+def test_sensor_data_rounds_fired(client, app, id, rounds_fired):
+
+    with app.app_context():
+        section = Section(id, 500)
+        soldier = Soldier(id, "Dunne", "I/C", id)
+        db.session.add_all([section, soldier])
+        db.session.commit()
+
         
+
+    message_string = f"id:{id},Rndsfired:{rounds_fired}"
+    response = client.get(f'/sections/sensor-data/{message_string}')
+
+    with app.app_context():
+        updated_soldier = Soldier.query.get(id)
+
+        assert updated_soldier.name == "Dunne"
+        assert response.status_code == 200
+        assert updated_soldier.ammunition_expended == rounds_fired
+        
+@pytest.mark.parametrize("id, heart_rate", HR_Params)
+def test_sensor_data_status(client, app, id, heart_rate):
+
+    with app.app_context():
+        section = Section(id, 500)
+        soldier = Soldier(id, "Dunne", "I/C", id)
+        db.session.add_all([section, soldier])
+        db.session.commit()
+
+    message_string = f"id:{id},HR:{heart_rate}"
+    response = client.get(f'/sections/sensor-data/{message_string}')
+
+    with app.app_context():
+        updated_soldier = Soldier.query.get(id)
+
+        assert updated_soldier.name == "Dunne"
+        assert response.status_code == 200
+        assert updated_soldier.last_heart_rate == heart_rate
+        new_vital = Vitals.query.filter_by(soldier_id=id).order_by(Vitals.id.desc()).first()
+        assert new_vital.heart_rate == heart_rate
+        
+@pytest.mark.parametrize("id, heart_rate", HR_Params)
+def test_sensor_data_battery_level(client, app, id, heart_rate):
+
+    with app.app_context():
+        section = Section(id, 500)
+        soldier = Soldier(id, "Dunne", "I/C", id)
+        db.session.add_all([section, soldier])
+        db.session.commit()
+
+        
+
+    message_string = f"id:{id},HR:{heart_rate}"
+    response = client.get(f'/sections/sensor-data/{message_string}')
+
+    with app.app_context():
+        updated_soldier = Soldier.query.get(id)
+
+        assert updated_soldier.name == "Dunne"
+        assert response.status_code == 200
+        assert updated_soldier.last_heart_rate == heart_rate
+        new_vital = Vitals.query.filter_by(soldier_id=id).order_by(Vitals.id.desc()).first()
+        assert new_vital.heart_rate == heart_rate
+        
+
+@pytest.mark.parametrize("id, heart_rate", HR_Params)
+def test_sensor_data_identity_check(client, app, id, heart_rate):
+
+    with app.app_context():
+        section = Section(id, 500)
+        soldier = Soldier(id, "Dunne", "I/C", id)
+        db.session.add_all([section, soldier])
+        db.session.commit()
+
+    message_string = f"id:{id},HR:{heart_rate}"
+    response = client.get(f'/sections/sensor-data/{message_string}')
+
+    with app.app_context():
+        updated_soldier = Soldier.query.get(id)
+
+        assert updated_soldier.name == "Dunne"
+        assert response.status_code == 200
+        assert updated_soldier.last_heart_rate == heart_rate
+        new_vital = Vitals.query.filter_by(soldier_id=id).order_by(Vitals.id.desc()).first()
+        assert new_vital.heart_rate == heart_rate  
