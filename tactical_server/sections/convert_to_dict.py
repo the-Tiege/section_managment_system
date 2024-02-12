@@ -9,7 +9,6 @@ def convert_to_dict(message):
     Returns:
     - dict: A dictionary containing parsed values from the string.
     """
-    x = number_yoke(9, 10)
     #split the string at every ':' and ',' and convert it to a dictionary
     message_dict=dict(u.split(":") for u in message.split(","))
     #all values in the dictionary are of type String. the following for loop finds the values that need to be integers and converts them
@@ -21,6 +20,3 @@ def convert_to_dict(message):
 
     return message_dict
 
-
-def number_yoke(arg_1, arg_2):
-    return arg_1 + arg_2
